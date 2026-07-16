@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style data-omelette-print-defaults>
+@media print {
+  @page { margin: 0.5in; }
+  h1, h2, h3, h4, h5, h6 { break-after: avoid; }
+  figure, table, pre, blockquote, img, svg, tr, [class~="card" i] { break-inside: avoid; }
+  img, svg { max-width: 100%; }
+  p { orphans: 3; widows: 3; }
+}
+</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Sora:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="image-slot.js"></script>
+<style>
+  html { scroll-behavior: smooth; }
+  body { margin:0; background:#0a0d11; color:#eef0f7; font-family:'Sora',system-ui,sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+  body, h1, h2, p, span, div { overflow-wrap:break-word; }
+  ::selection { background:rgba(84,221,230,0.30); color:#fff; }
+  ::-webkit-scrollbar { width:9px; }
+  ::-webkit-scrollbar-track { background:#0a0d11; }
+  ::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.10); border-radius:9px; }
+  ::-webkit-scrollbar-thumb:hover { background:rgba(84,221,230,0.4); }
+  @media (hover:hover) and (pointer:fine){ html, body, * { cursor:none !important; } }
+  @keyframes scrollpulse { 0%,100%{ transform:translateY(0); opacity:.35 } 50%{ transform:translateY(8px); opacity:1 } }
+  @keyframes orbdrift { 0%,100%{ transform:translate(0,0) scale(1) } 33%{ transform:translate(40px,-30px) scale(1.08) } 66%{ transform:translate(-30px,25px) scale(.95) } }
+  @keyframes stageIn { from{ opacity:0; transform:translateY(20px) } to{ opacity:1; transform:none } }
+  @keyframes atmoIn { from{ opacity:.12 } to{ opacity:1 } }
+  @keyframes caret { 0%,100%{ opacity:1 } 50%{ opacity:0 } }
+  /* apparatus rail only where a real gutter exists */
+  @media (max-width:1100px){ [data-apparatus]{ display:none } }
+  /* consistent, breathing side margins across every section on tablet/mobile */
+  @media (max-width:900px){
+    main[data-film] > section { padding-left:28px !important; padding-right:28px !important; }
+    main[data-film] > section[data-qscene]{ padding-left:0 !important; padding-right:0 !important; }
+    #inicio{ padding-bottom:13vh !important; }
+    [data-reg-coord]{ letter-spacing:.22em !important; }
+  }
+  @media (max-width:480px){
+    main[data-film] > section { padding-left:20px !important; padding-right:20px !important; }
+    [data-reg-coord]{ letter-spacing:.14em !important; font-size:9px !important; }
+    [data-reg-time]{ display:none !important; }
+  }
+  /* atmospheric continuity — soft gradient bleed at every section boundary so scenes never hard-cut */
+  main[data-film] > section { position:relative; }
+  main[data-film] > section::before {
+    content:''; position:absolute; left:0; right:0; top:-22vh; height:44vh; pointer-events:none; z-index:0;
+    background:radial-gradient(70% 100% at 50% 50%, rgba(84,221,230,.030), rgba(84,221,230,0) 72%);
+  }
+  main[data-film] > section > * { position:relative; z-index:1; }
+</style>
+</helmet>
+
+<div data-bg-wrap style="position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none">
+  <canvas data-bg style="display:block;width:100%;height:100%"></canvas>
+</div>
+<div data-noise style="position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.045;mix-blend-mode:overlay;background-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22140%22 height=%22140%22><filter id=%22n%22><feTurbulence type=%22fractalNoise%22 baseFrequency=%220.85%22 numOctaves=%222%22/></filter><rect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22/></svg>')"></div>
+
+<div data-grid style="position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.06;background-image:radial-gradient(rgba(176,196,206,.45) 1px,transparent 1.5px);background-size:32px 32px;-webkit-mask-image:radial-gradient(circle at 50% 30%,#000,transparent 80%);mask-image:radial-gradient(circle at 50% 30%,#000,transparent 80%)"></div>
+<div data-apparatus style="position:fixed;inset:0;z-index:3;pointer-events:none">
+  <div style="position:absolute;left:clamp(14px,3.4vw,30px);top:13.5vh;bottom:11vh;width:1px;background:linear-gradient(180deg,transparent,rgba(176,196,206,.16) 12%,rgba(176,196,206,.16) 88%,transparent)"></div>
+  <div data-log style="position:absolute;left:calc(clamp(14px,3.4vw,30px) + 14px);top:calc(13.5vh - 2px);display:flex;align-items:baseline;gap:10px;font-family:'JetBrains Mono',monospace;transition:opacity .6s ease">
+    <span data-log-idx style="font-size:10px;letter-spacing:.14em;color:#5c6678">00</span>
+    <span style="width:16px;height:1px;background:rgba(176,196,206,.28);transform:translateY(-3px)"></span>
+    <span data-log-word style="font-size:10.5px;letter-spacing:.36em;text-transform:uppercase;color:#54dde6">Observación</span>
+  </div>
+  <div style="position:absolute;left:clamp(7px,2.2vw,20px);bottom:15vh;writing-mode:vertical-rl;transform:rotate(180deg);font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.46em;text-transform:uppercase;color:#454e60">{{ t.apparatus.spine }}</div>
+  <div style="position:absolute;right:clamp(14px,3.4vw,30px);bottom:15vh;writing-mode:vertical-rl;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.4em;text-transform:uppercase;color:#3f4858">{{ t.apparatus.coord }}</div>
+</div>
+<div data-cursor-ring style="position:fixed;top:0;left:0;width:34px;height:34px;border:1px solid rgba(84,221,230,.55);border-radius:50%;transform:translate(-100px,-100px);pointer-events:none;z-index:9999;transition:width .25s ease,height .25s ease,border-color .25s ease,background .25s ease;mix-blend-mode:screen"></div>
+<div data-cursor-dot style="position:fixed;top:0;left:0;width:5px;height:5px;background:#d6eef0;border-radius:50%;transform:translate(-100px,-100px);pointer-events:none;z-index:9999"></div>
+
+<div data-egg style="position:fixed;left:clamp(18px,4vw,40px);bottom:26px;z-index:75;max-width:260px;font-family:'JetBrains Mono',monospace;font-size:11.5px;line-height:1.6;letter-spacing:.02em;color:#5b6480;opacity:0;transform:translateY(10px);transition:opacity 1.6s ease,transform 1.6s ease;pointer-events:none">{{ t.egg }}</div>
+
+<header style="position:fixed;top:0;left:0;right:0;z-index:70;display:flex;align-items:center;justify-content:space-between;padding:22px clamp(20px,5vw,56px);pointer-events:none">
+  <button onClick="{{ openProfile }}" data-magnetic aria-label="Perfil" style="pointer-events:auto;display:flex;align-items:center;gap:11px;background:none;border:none;padding:0;cursor:pointer">
+    <span style="width:30px;height:30px;border-radius:50%;overflow:hidden;flex-shrink:0;position:relative;border:1px solid rgba(84,221,230,.4);box-shadow:0 0 10px rgba(84,221,230,.28)">
+      <img src="assets/profile-main.png" alt="" style="width:100%;height:100%;object-fit:cover;object-position:50% 30%;display:block">
+    </span>
+    <span style="font-family:'JetBrains Mono',monospace;font-weight:600;font-size:12px;letter-spacing:.26em;color:#eef0f7">JEG</span>
+  </button>
+  <button onClick="{{ toggleLang }}" data-magnetic style="pointer-events:auto;font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.12em;color:#eef0f7;background:rgba(255,255,255,.05);border:1px solid rgba(176,196,206,.12);border-radius:999px;padding:7px 13px;backdrop-filter:blur(8px)">{{ langLabel }}</button>
+</header>
+
+<div onClick="{{ closeProfile }}" style="{{ overlayStyle }}"></div>
+<aside style="{{ panelStyle }}">
+  <button onClick="{{ closeProfile }}" aria-label="Cerrar" style="position:absolute;top:26px;right:26px;display:flex;align-items:center;gap:8px;background:none;border:none;padding:0;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:#5c6678">{{ t.profile.close }} <span style="font-size:13px;line-height:1;color:#8b93a8">×</span></button>
+
+  <div style="{{ panelInnerStyle }}">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:34px;font-family:'JetBrains Mono',monospace">
+    <span style="width:5px;height:5px;background:#54dde6;transform:rotate(45deg)"></span>
+    <span style="font-size:9px;letter-spacing:.34em;text-transform:uppercase;color:#5c6678">43.29°N · 2.90°O</span>
+  </div>
+
+  <div style="width:128px;height:128px;border-radius:50%;overflow:hidden;position:relative;border:1px solid rgba(84,221,230,.28);box-shadow:0 0 24px rgba(84,221,230,.16);margin-bottom:30px">
+    <img src="assets/profile-main.png" alt="Juan Esteban" style="width:100%;height:100%;object-fit:cover;object-position:50% 30%;display:block">
+  </div>
+
+  <h3 style="margin:0 0 26px;font-family:'JetBrains Mono',monospace;font-weight:300;font-size:clamp(21px,2.6vw,27px);letter-spacing:-.01em;color:#eef0f7">{{ t.profile.name }}</h3>
+
+  <div style="display:flex;flex-direction:column;gap:0;border-top:1px solid rgba(176,196,206,.14)">
+    <div style="display:flex;flex-direction:column;gap:7px;padding:16px 0;border-bottom:1px solid rgba(176,196,206,.1)">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.32em;text-transform:uppercase;color:#54dde6">{{ t.profile.k1 }}</span>
+      <span style="font-size:15px;line-height:1.5;color:#dfe3ee">{{ t.profile.v1 }}</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:7px;padding:16px 0;border-bottom:1px solid rgba(176,196,206,.1)">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.32em;text-transform:uppercase;color:#54dde6">{{ t.profile.k2 }}</span>
+      <span style="font-size:15px;line-height:1.5;color:#dfe3ee">{{ t.profile.v2 }}</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:7px;padding:16px 0;border-bottom:1px solid rgba(176,196,206,.1)">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.32em;text-transform:uppercase;color:#54dde6">{{ t.profile.k3 }}</span>
+      <span style="font-size:15px;line-height:1.5;color:#dfe3ee">{{ t.profile.v3 }}</span>
+    </div>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:12px;margin:30px 0 14px;font-family:'JetBrains Mono',monospace">
+    <span style="font-size:9px;letter-spacing:.32em;text-transform:uppercase;color:#54dde6">{{ t.profile.gallery }}</span>
+    <span style="flex:1;height:1px;background:rgba(176,196,206,.12)"></span>
+    <span style="font-size:9px;letter-spacing:.2em;color:#5c6678">01 — 04</span>
+  </div>
+  <div data-gallery style="display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;margin-bottom:clamp(30px,6vh,56px);scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch">
+    <div onClick="{{ revealPhoto }}" data-revealed="0" style="flex:0 0 auto;width:112px;height:146px;border-radius:4px;overflow:hidden;position:relative;scroll-snap-align:start;border:1px solid rgba(84,221,230,.18);cursor:pointer;transition:border-color .5s ease">
+      <img src="assets/gal-01.png" alt="" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;opacity:.82">
+      <img data-color-layer src="assets/color-01.png" alt="" loading="eager" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .6s cubic-bezier(.22,1,.28,1)">
+      <span style="position:absolute;left:8px;bottom:7px;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.24em;text-transform:uppercase;color:rgba(220,240,242,.7);pointer-events:none;z-index:2">01</span>
+    </div>
+    <div onClick="{{ revealPhoto }}" data-revealed="0" style="flex:0 0 auto;width:112px;height:146px;border-radius:4px;overflow:hidden;position:relative;scroll-snap-align:start;border:1px solid rgba(84,221,230,.18);cursor:pointer;transition:border-color .5s ease">
+      <img src="assets/gal-02.png" alt="" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;opacity:.82">
+      <img data-color-layer src="assets/color-02.png" alt="" loading="eager" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .6s cubic-bezier(.22,1,.28,1)">
+      <span style="position:absolute;left:8px;bottom:7px;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.24em;text-transform:uppercase;color:rgba(220,240,242,.7);pointer-events:none;z-index:2">02</span>
+    </div>
+    <div onClick="{{ revealPhoto }}" data-revealed="0" style="flex:0 0 auto;width:112px;height:146px;border-radius:4px;overflow:hidden;position:relative;scroll-snap-align:start;border:1px solid rgba(84,221,230,.18);cursor:pointer;transition:border-color .5s ease">
+      <img src="assets/gal-03.png" alt="" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;opacity:.82">
+      <img data-color-layer src="assets/color-03.png" alt="" loading="eager" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .6s cubic-bezier(.22,1,.28,1)">
+      <span style="position:absolute;left:8px;bottom:7px;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.24em;text-transform:uppercase;color:rgba(220,240,242,.7);pointer-events:none;z-index:2">03</span>
+    </div>
+    <div onClick="{{ revealPhoto }}" data-revealed="0" style="flex:0 0 auto;width:112px;height:146px;border-radius:4px;overflow:hidden;position:relative;scroll-snap-align:start;border:1px solid rgba(84,221,230,.18);cursor:pointer;transition:border-color .5s ease">
+      <img src="assets/gal-04.png" alt="" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;opacity:.82">
+      <img data-color-layer src="assets/color-04.png" alt="" loading="eager" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .6s cubic-bezier(.22,1,.28,1)">
+      <span style="position:absolute;left:8px;bottom:7px;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.24em;text-transform:uppercase;color:rgba(220,240,242,.7);pointer-events:none;z-index:2">04</span>
+    </div>
+  </div>
+  </div>
+</aside>
+
+<main style="position:relative;z-index:2" data-film>
+
+  <!-- ============ 01 · INTRO ============ -->
+  <section id="inicio" data-screen-label="Intro" data-tint="84,221,230" style="min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:16vh clamp(24px,6vw,72px) 20vh;position:relative">
+    <div data-intro-words style="position:relative;height:clamp(70px,12vh,130px);width:100%;max-width:760px;display:flex;align-items:flex-end;justify-content:center">
+      <sc-for list="{{ t.intro.words }}" as="word" hint-placeholder-count="3">
+        <div data-intro-word="{{ $index }}" style="position:absolute;left:0;right:0;text-align:center;opacity:0;transform:translateY(26px);transition:opacity 1.1s cubic-bezier(.16,1,.3,1),transform 1.1s cubic-bezier(.16,1,.3,1);font-family:'JetBrains Mono',monospace;font-weight:300;font-size:clamp(20px,3.4vw,40px);letter-spacing:-.01em;color:#c9cee0">{{ word }}</div>
+      </sc-for>
+    </div>
+    <div data-intro-name style="opacity:0;transform:translateY(24px);transition:opacity 1.3s cubic-bezier(.16,1,.3,1),transform 1.3s cubic-bezier(.16,1,.3,1);display:flex;flex-direction:column;align-items:center;gap:18px;width:100%;max-width:760px">
+      <h1 style="margin:0;font-family:'Newsreader',serif;font-weight:500;font-size:clamp(40px,8vw,108px);line-height:1.0;letter-spacing:-.02em;background:linear-gradient(180deg,#f4f1e8 0%,#c7cbd2 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">{{ t.intro.name }}</h1>
+      <p style="margin:6px auto 0;font-family:'Newsreader',serif;font-style:italic;font-weight:400;font-size:clamp(17px,2.2vw,25px);line-height:1.45;letter-spacing:0;color:#aab0c6;max-width:560px;text-transform:none">{{ t.intro.role }}</p>
+    </div>
+    <a href="#manifiesto" data-intro-cue style="opacity:0;transition:opacity 1s ease;position:absolute;bottom:34px;left:50%;right:auto;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:10px;text-decoration:none;color:#7c83a0">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.3em;text-transform:uppercase">{{ t.intro.scroll }}</span>
+      <span style="display:block;width:1px;height:30px;background:linear-gradient(180deg,rgba(124,131,160,.6),transparent)"></span>
+      <span style="font-size:13px;animation:scrollpulse 2.2s ease-in-out infinite">↓</span>
+    </a>
+  </section>
+
+  <!-- ============ 02 · MANIFIESTO (silent scrub) ============ -->
+  <section id="manifiesto" data-screen-label="Manifiesto" data-tint="84,221,230" style="position:relative;height:190vh">
+    <div data-mani-sticky style="position:sticky;top:0;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:14vh clamp(24px,7vw,120px)">
+      <h2 style="margin:0;max-width:900px;font-family:'JetBrains Mono',monospace;font-weight:300;font-size:clamp(26px,4.6vw,58px);line-height:1.24;letter-spacing:-.02em">
+        <sc-for list="{{ manifestoWords }}" as="mw" hint-placeholder-count="9">
+          <span data-mword style="display:inline-block;margin-right:.3em;color:#222740;transition:color .5s ease,text-shadow .5s ease">{{ mw }}</span>
+        </sc-for>
+      </h2>
+      <p data-mani-sub style="opacity:0;transition:opacity 1.1s ease;margin:46px 0 0;max-width:540px;font-size:clamp(14px,1.7vw,18px);line-height:1.7;color:#7c83a0">{{ t.manifesto.sub }}</p>
+    </div>
+  </section>
+
+  <!-- ============ 03 · CÓMO PIENSO (no label, expressive) ============ -->
+  <section id="sobre-mi" data-screen-label="Sobre mí" data-tint="84,221,230" style="padding:18vh clamp(24px,6vw,90px);max-width:1180px;margin:0 auto">
+    <div data-reveal style="opacity:0;transform:translateY(14px);transition:opacity .9s ease,transform .9s ease;display:flex;align-items:center;gap:16px;margin:0 0 clamp(46px,8vh,98px);font-family:'JetBrains Mono',monospace"><span style="width:5px;height:5px;background:#54dde6;transform:rotate(45deg);flex-shrink:0"></span><span data-reg-coord style="font-size:9.5px;letter-spacing:.32em;text-transform:uppercase;color:#8b93a8;flex-shrink:0">43.26°N · 2.92°O</span><span style="flex:1;height:1px;background:rgba(176,196,206,.12)"></span><span data-reg-time style="font-size:9px;letter-spacing:.3em;color:#5c6678;flex-shrink:0">06:14</span></div>
+    <div style="display:flex;flex-direction:column;gap:clamp(54px,12vh,140px)">
+      <sc-for list="{{ aboutStatements }}" as="st" hint-placeholder-count="4">
+        <div style="display:flex;gap:clamp(14px,3.5vw,52px);align-items:flex-start;max-width:1080px;{{ st.align }}">
+          <span data-act-num style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#3a4366;flex-shrink:0;padding-top:clamp(10px,1.4vw,18px);opacity:0;transition:opacity .8s ease .2s">{{ st.k }}</span>
+          <h3 data-act-text style="margin:0;font-weight:300;font-size:{{ st.size }};line-height:1.08;letter-spacing:-.02em;color:#eef0f7;text-wrap:balance;clip-path:inset(0 100% -12% 0);opacity:.05;transition:clip-path 1.2s cubic-bezier(.16,1,.3,1),opacity .7s ease">{{ st.text }}</h3>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- ============ 04 · PREGUNTAS A (slow) ============ -->
+  <section data-qscene data-screen-label="·" data-tint="84,221,230" style="position:relative;height:215vh">
+    <div style="position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 clamp(24px,8vw,140px)">
+      <sc-for list="{{ qsceneA }}" as="q" hint-placeholder-count="3">
+        <p data-qline style="position:absolute;left:clamp(24px,8vw,140px);right:clamp(24px,8vw,140px);margin:0 auto;max-width:880px;font-family:'JetBrains Mono',monospace;font-weight:300;font-size:clamp(24px,4.4vw,52px);line-height:1.3;letter-spacing:-.01em;color:#d6eef0;opacity:0;transform:translateY(28px);filter:blur(7px);will-change:opacity,transform,filter">{{ q }}</p>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- ============ 05 · LA HISTORIA (personal timeline, no label) ============ -->
+  <section id="trayectoria" data-screen-label="Trayectoria" data-tint="84,221,230" style="padding:12vh clamp(24px,6vw,90px) 18vh;max-width:1020px;margin:0 auto">
+    <div data-reveal style="opacity:0;transform:translateY(14px);transition:opacity .9s ease,transform .9s ease;display:flex;align-items:center;gap:16px;margin:0 0 clamp(46px,8vh,98px);font-family:'JetBrains Mono',monospace"><span style="width:5px;height:5px;background:#54dde6;transform:rotate(45deg);flex-shrink:0"></span><span data-reg-coord style="font-size:9.5px;letter-spacing:.32em;text-transform:uppercase;color:#8b93a8;flex-shrink:0">43.31°N · 2.98°O</span><span style="flex:1;height:1px;background:rgba(176,196,206,.12)"></span><span data-reg-time style="font-size:9px;letter-spacing:.3em;color:#5c6678;flex-shrink:0">08:47</span></div>
+    <p data-reveal style="opacity:0;transform:translateY(24px);transition:opacity 1s cubic-bezier(.16,1,.3,1),transform 1s cubic-bezier(.16,1,.3,1);margin:0 0 84px;font-family:'JetBrains Mono',monospace;font-weight:300;font-size:clamp(17px,2.4vw,26px);letter-spacing:-.01em;color:#6b7290;max-width:520px;text-wrap:balance">{{ t.journey.opener }}</p>
+    <div data-tl style="position:relative;padding-left:clamp(38px,6vw,78px)">
+      <div style="position:absolute;left:13px;top:4px;bottom:4px;width:2px;background:rgba(176,196,206,.07);border-radius:2px"></div>
+      <div data-tl-grow style="position:absolute;left:13px;top:4px;width:2px;height:0;background:linear-gradient(180deg,#54dde6,#bfeef2);border-radius:2px;box-shadow:0 0 14px rgba(84,221,230,.5)"></div>
+      <div data-tl-head style="position:absolute;left:14px;top:4px;width:13px;height:13px;margin-left:-6.5px;border-radius:50%;background:#dcf0f2;box-shadow:0 0 22px 6px rgba(84,221,230,.85);opacity:0;transition:opacity .4s ease"></div>
+      <div style="display:flex;flex-direction:column;gap:clamp(44px,7.5vh,80px)">
+        <sc-for list="{{ t.journey.items }}" as="it" hint-placeholder-count="6">
+          <div data-tl-item style="position:relative;opacity:.18;transform:translateX(18px);transition:opacity .9s ease,transform .9s cubic-bezier(.16,1,.3,1)">
+            <span data-tl-node style="position:absolute;left:calc(-1 * clamp(38px,6vw,78px) + 7px);top:7px;width:14px;height:14px;border-radius:50%;background:#0a0d11;border:2px solid rgba(84,221,230,.35);transform:scale(.32);transition:transform .55s cubic-bezier(.34,1.56,.64,1),border-color .45s ease,box-shadow .45s ease"></span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#54dde6">{{ it.year }}</span>
+            <p style="margin:14px 0 0;max-width:600px;font-size:clamp(17px,2.3vw,24px);line-height:1.5;letter-spacing:-.01em;color:#dfe3f0;text-wrap:pretty">{{ it.d }}</p>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 06 · LO QUE HAGO (accordion, no label) ============ -->
+  <section id="construyo" data-screen-label="Qué construyo" data-tint="84,221,230" style="padding:12vh clamp(24px,6vw,90px);max-width:1160px;margin:0 auto">
+    <div style="border-bottom:1px solid rgba(176,196,206,.12)">
+      <div data-reveal style="opacity:0;transform:translateY(14px);transition:opacity .9s ease,transform .9s ease;display:flex;align-items:center;gap:16px;margin:0 0 clamp(46px,8vh,98px);font-family:'JetBrains Mono',monospace"><span style="width:5px;height:5px;background:#54dde6;transform:rotate(45deg);flex-shrink:0"></span><span data-reg-coord style="font-size:9.5px;letter-spacing:.32em;text-transform:uppercase;color:#8b93a8;flex-shrink:0">43.19°N · 2.86°O</span><span style="flex:1;height:1px;background:rgba(176,196,206,.12)"></span><span data-reg-time style="font-size:9px;letter-spacing:.3em;color:#5c6678;flex-shrink:0">11:20</span></div>
+    <sc-for list="{{ t.build.items }}" as="b" hint-placeholder-count="5">
+        <div data-acc-row style="border-top:1px solid rgba(176,196,206,.12)">
+          <div data-acc-head style="display:flex;align-items:center;gap:clamp(14px,3vw,34px);padding:clamp(20px,3vh,30px) 0;cursor:none">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#54dde6;width:24px;flex-shrink:0">{{ b.k }}</span>
+            <h3 data-acc-title style="margin:0;flex:1;font-weight:400;font-size:clamp(21px,3.6vw,42px);letter-spacing:-.02em;color:#9aa0b4;transition:color .4s ease,transform .5s cubic-bezier(.16,1,.3,1)">{{ b.t }}</h3>
+            <span data-acc-plus style="font-family:'JetBrains Mono',monospace;font-size:23px;color:#3a4366;transition:transform .5s cubic-bezier(.16,1,.3,1),color .4s ease;flex-shrink:0">+</span>
+          </div>
+          <div data-acc-body style="overflow:hidden;max-height:0;transition:max-height .6s cubic-bezier(.16,1,.3,1)">
+            <p data-acc-desc style="margin:0 0 28px;padding-left:calc(24px + clamp(14px,3vw,34px));max-width:660px;font-size:clamp(15px,1.8vw,19px);line-height:1.6;color:#aab0c6;opacity:0;transition:opacity .5s ease">{{ b.d }}</p>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- ============ 07 · FRASE QUE SE REESCRIBE (surprise) ============ -->
+  <section data-screen-label="·" data-tint="84,221,230" style="min-height:62vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:8vh clamp(24px,6vw,80px)">
+    <h2 style="margin:0;font-family:'JetBrains Mono',monospace;font-weight:300;font-size:clamp(26px,5vw,60px);letter-spacing:-.02em;color:#eef0f7">
+      <span style="color:#6b7290">{{ t.rewrite.prefix }} </span><span data-rewrite style="color:#fff;border-right:2px solid #54dde6;padding-right:2px;animation:caret 1s step-end infinite"></span>
+    </h2>
+  </section>
+
+  <!-- ============ 08 · PROYECTOS (immersive, responsive) ============ -->
+  <section id="proyectos" data-screen-label="Proyectos" data-tint="84,221,230" style="position:relative;padding:12vh clamp(24px,6vw,90px);overflow:hidden">
+    <div data-atmo style="position:absolute;inset:0;z-index:0;pointer-events:none"></div>
+    <div style="position:relative;z-index:2;max-width:1280px;margin:0 auto">
+      <div data-reveal style="opacity:0;transform:translateY(14px);transition:opacity .9s ease,transform .9s ease;display:flex;align-items:center;gap:16px;margin:0 0 clamp(46px,8vh,98px);font-family:'JetBrains Mono',monospace"><span style="width:5px;height:5px;background:#54dde6;transform:rotate(45deg);flex-shrink:0"></span><span data-reg-coord style="font-size:9.5px;letter-spacing:.32em;text-transform:uppercase;color:#8b93a8;flex-shrink:0">43.28°N · 2.91°O</span><span style="flex:1;height:1px;background:rgba(176,196,206,.12)"></span><span data-reg-time style="font-size:9px;letter-spacing:.3em;color:#5c6678;flex-shrink:0">14:05</span></div>
+    <div style="display:flex;flex-direction:column;gap:clamp(30px,5vh,58px)">
+        <div data-reveal style="opacity:0;transform:translateY(20px);transition:opacity 1s ease,transform 1s ease;border-top:1px solid rgba(176,196,206,.14);border-bottom:1px solid rgba(176,196,206,.14);padding:14px 0">
+          <p style="margin:0 0 14px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:#4a5170">{{ t.projects.aside }}</p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px 26px">
+            <sc-for list="{{ projectsNav }}" as="pn" hint-placeholder-count="5">
+              <button onClick="{{ pn.onClick }}" data-magnetic style="{{ pn.style }}">
+                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#54dde6;flex-shrink:0">{{ pn.num }}</span>
+                <span style="font-weight:500;font-size:clamp(16px,2vw,22px);letter-spacing:-.01em;text-align:left;line-height:1.1">{{ pn.name }}</span>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr;gap:clamp(24px,4vw,52px);min-width:0;align-items:start">
+          <div data-stage-media style="position:relative;aspect-ratio:21/9;border-radius:4px;overflow:hidden;border:1px solid rgba(176,196,206,.18)">
+            <span style="position:absolute;top:9px;left:9px;width:12px;height:12px;border-top:1px solid rgba(176,196,206,.5);border-left:1px solid rgba(176,196,206,.5);z-index:6;pointer-events:none"></span><span style="position:absolute;top:9px;right:9px;width:12px;height:12px;border-top:1px solid rgba(176,196,206,.5);border-right:1px solid rgba(176,196,206,.5);z-index:6;pointer-events:none"></span><span style="position:absolute;bottom:9px;left:9px;width:12px;height:12px;border-bottom:1px solid rgba(176,196,206,.5);border-left:1px solid rgba(176,196,206,.5);z-index:6;pointer-events:none"></span><span style="position:absolute;bottom:9px;right:9px;width:12px;height:12px;border-bottom:1px solid rgba(176,196,206,.5);border-right:1px solid rgba(176,196,206,.5);z-index:6;pointer-events:none"></span>
+            <sc-for list="{{ stageProjects }}" as="sp" hint-placeholder-count="5">
+              <div data-proj-layer="{{ sp.id }}" style="position:absolute;inset:0;opacity:0;transform:scale(1.06);transition:opacity .8s ease,transform 1.3s ease">
+                <image-slot id="stage-{{ sp.id }}" shape="rect" fit="cover" placeholder="cover" style="width:100%;height:100%"></image-slot>
+              </div>
+            </sc-for>
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(8,15,25,.55));pointer-events:none;z-index:3"></div>
+            <span style="position:absolute;z-index:4;top:14px;left:14px;display:flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#d6eef0"><span style="width:7px;height:7px;border-radius:50%;background:{{ stage.statusColor }};box-shadow:0 0 8px {{ stage.statusColor }}"></span>{{ stage.status }}</span>
+          </div>
+          <div data-stage-panel style="display:flex;flex-direction:column">
+            <div style="display:flex;align-items:baseline;gap:14px;border-bottom:1px solid rgba(176,196,206,.14);padding-bottom:14px;margin-bottom:18px">
+              <span style="font-family:'Newsreader',serif;font-style:italic;font-size:clamp(13px,1.6vw,16px);color:{{ stage.accent }}">expediente</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#7c83a0;margin-left:auto">{{ stage.catLabel }} · {{ stage.year }}</span>
+            </div>
+            <h3 style="margin:0 0 16px;font-family:'Newsreader',serif;font-weight:500;font-size:clamp(34px,5.4vw,60px);letter-spacing:-.02em;color:#fff;line-height:1.0">{{ stage.name }}</h3>
+            <p style="margin:0 0 26px;max-width:680px;font-size:clamp(15px,1.8vw,19px);line-height:1.65;color:#c4c9da">{{ stage.long }}</p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:18px 28px;margin:0 0 28px">
+              <p style="margin:0;padding-left:14px;border-left:2px solid {{ stage.accent }};font-size:clamp(13px,1.55vw,15px);line-height:1.55;color:#9aa0b4"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:{{ stage.accent }};display:block;margin-bottom:5px">{{ t.projects.learned }}</span>{{ stage.learned }}</p>
+              <p style="margin:0;padding-left:14px;border-left:2px solid rgba(176,196,206,.16);font-size:clamp(13px,1.55vw,15px);line-height:1.55;color:#9aa0b4"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#7c83a0;display:block;margin-bottom:5px">{{ stage.decLabel }}</span>{{ stage.dec }}</p>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:24px;margin-bottom:22px">
+              <sc-for list="{{ stage.stats }}" as="s" hint-placeholder-count="3">
+                <div>
+                  <div style="font-family:'JetBrains Mono',monospace;font-size:clamp(19px,2.8vw,28px);font-weight:600;color:{{ stage.accent }}">{{ s.n }}</div>
+                  <div style="font-size:12px;color:#7c83a0;margin-top:3px">{{ s.l }}</div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="border:1px solid rgba(176,196,206,.08);border-radius:12px;background:rgba(0,0,0,.32);padding:13px 15px;margin-bottom:22px;overflow-x:auto;-webkit-overflow-scrolling:touch">
+              <div style="display:flex;gap:6px;margin-bottom:10px"><span style="width:9px;height:9px;border-radius:50%;background:#ff5f57"></span><span style="width:9px;height:9px;border-radius:50%;background:#febc2e"></span><span style="width:9px;height:9px;border-radius:50%;background:#28c840"></span></div>
+              <pre style="margin:0;font-family:'JetBrains Mono',monospace;font-size:clamp(11px,1.4vw,12px);line-height:1.65;color:#aab0c6;white-space:pre">{{ stage.snippet }}</pre>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:24px">
+              <sc-for list="{{ stage.stack }}" as="s" hint-placeholder-count="4">
+                <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.05em;padding:5px 10px;border-radius:7px;background:rgba(84,221,230,.07);border:1px solid rgba(84,221,230,.18);color:#bfe6ea">{{ s }}</span>
+              </sc-for>
+            </div>
+            <a href="https://github.com/jegomez23" target="_blank" rel="noopener" data-magnetic style="align-self:flex-start;text-decoration:none;display:inline-flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-size:12.5px;letter-spacing:.06em;color:#0a0d11;background:linear-gradient(120deg,#54dde6,#2bbac4);box-shadow:0 0 22px rgba(84,221,230,.26);padding:12px 22px;border-radius:999px;font-weight:500">{{ t.projects.visit }} ↗</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 09 · STACK (orbits, no label) ============ -->
+  <section id="stack" data-screen-label="Stack" data-tint="84,221,230" style="padding:12vh clamp(16px,4vw,60px) 12vh;max-width:1320px;margin:0 auto">
+    <div data-reveal style="opacity:0;transform:translateY(14px);transition:opacity .9s ease,transform .9s ease;display:flex;align-items:center;gap:16px;margin:0 0 clamp(46px,8vh,98px);font-family:'JetBrains Mono',monospace"><span style="width:5px;height:5px;background:#54dde6;transform:rotate(45deg);flex-shrink:0"></span><span data-reg-coord style="font-size:9.5px;letter-spacing:.32em;text-transform:uppercase;color:#8b93a8;flex-shrink:0">43.33°N · 2.95°O</span><span style="flex:1;height:1px;background:rgba(176,196,206,.12)"></span><span data-reg-time style="font-size:9px;letter-spacing:.3em;color:#5c6678;flex-shrink:0">17:38</span></div>
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:18px">
+      <p data-reveal style="opacity:0;transform:translateY(24px);transition:opacity 1s ease,transform 1s ease;margin:0;max-width:480px;font-size:clamp(13px,1.6vw,16px);line-height:1.6;color:#6b7290;font-family:'JetBrains Mono',monospace;letter-spacing:.02em">{{ t.tech.hint }}</p>
+      <span data-reveal style="opacity:0;transition:opacity 1s ease;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.34em;text-transform:uppercase;color:#54dde6">{{ t.tech.frame }}</span>
+    </div>
+    <div data-reveal style="opacity:0;transition:opacity 1.4s ease;position:relative;width:100%;height:clamp(360px,52vh,560px);border:1px solid rgba(176,196,206,.16);border-radius:4px;overflow:hidden">
+      <span style="position:absolute;top:9px;left:11px;width:13px;height:13px;border-top:1px solid rgba(176,196,206,.5);border-left:1px solid rgba(176,196,206,.5);z-index:2"></span>
+      <span style="position:absolute;top:9px;right:11px;width:13px;height:13px;border-top:1px solid rgba(176,196,206,.5);border-right:1px solid rgba(176,196,206,.5);z-index:2"></span>
+      <span style="position:absolute;bottom:9px;left:11px;width:13px;height:13px;border-bottom:1px solid rgba(176,196,206,.5);border-left:1px solid rgba(176,196,206,.5);z-index:2"></span>
+      <span style="position:absolute;bottom:9px;right:11px;width:13px;height:13px;border-bottom:1px solid rgba(176,196,206,.5);border-right:1px solid rgba(176,196,206,.5);z-index:2"></span>
+      <canvas data-orbits style="display:block;width:100%;height:100%"></canvas>
+      <div style="position:absolute;left:14px;bottom:13px;font-family:'JetBrains Mono',monospace;pointer-events:none">
+        <span style="font-weight:600;font-size:clamp(16px,2vw,22px);color:#aab0c6">{{ t.tech.count }}</span>
+        <span style="font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:#4a5170;margin-left:8px">{{ t.tech.unit }}</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 10 · GITHUB (no label) ============ -->
+  <section id="github" data-screen-label="GitHub" data-tint="84,221,230" style="padding:10vh clamp(24px,6vw,90px);max-width:1160px;margin:0 auto">
+    <div data-reveal style="opacity:0;transform:translateY(14px);transition:opacity .9s ease,transform .9s ease;display:flex;align-items:center;gap:16px;margin:0 0 clamp(46px,8vh,98px);font-family:'JetBrains Mono',monospace"><span style="width:5px;height:5px;background:#54dde6;transform:rotate(45deg);flex-shrink:0"></span><span data-reg-coord style="font-size:9.5px;letter-spacing:.32em;text-transform:uppercase;color:#8b93a8;flex-shrink:0">43.24°N · 2.89°O</span><span style="flex:1;height:1px;background:rgba(176,196,206,.12)"></span><span data-reg-time style="font-size:9px;letter-spacing:.3em;color:#5c6678;flex-shrink:0">21:02</span></div>
+    <div style="display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:34px">
+      <p data-reveal style="opacity:0;transform:translateY(20px);transition:opacity 1s ease,transform 1s ease;margin:0;font-size:clamp(15px,1.9vw,19px);line-height:1.5;color:#9aa0b4;max-width:480px;text-wrap:pretty">{{ t.github.intro }}</p>
+      <a href="https://github.com/jegomez23" target="_blank" rel="noopener" data-magnetic data-reveal style="opacity:0;transition:opacity .9s ease;display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-family:'JetBrains Mono',monospace;font-size:12.5px;letter-spacing:.08em;color:#eef0f7;padding:11px 18px;border:1px solid rgba(176,196,206,.16);border-radius:999px;background:rgba(255,255,255,.04)">{{ t.github.user }} ↗</a>
+    </div>
+    <div data-reveal style="opacity:0;transition:opacity 1s ease;margin-bottom:26px;position:relative;border:1px solid rgba(176,196,206,.18);border-radius:4px;overflow:hidden;padding:10px"><span style="position:absolute;top:9px;left:9px;width:12px;height:12px;border-top:1px solid rgba(176,196,206,.5);border-left:1px solid rgba(176,196,206,.5);z-index:6;pointer-events:none"></span><span style="position:absolute;top:9px;right:9px;width:12px;height:12px;border-top:1px solid rgba(176,196,206,.5);border-right:1px solid rgba(176,196,206,.5);z-index:6;pointer-events:none"></span><span style="position:absolute;bottom:9px;left:9px;width:12px;height:12px;border-bottom:1px solid rgba(176,196,206,.5);border-left:1px solid rgba(176,196,206,.5);z-index:6;pointer-events:none"></span><span style="position:absolute;bottom:9px;right:9px;width:12px;height:12px;border-bottom:1px solid rgba(176,196,206,.5);border-right:1px solid rgba(176,196,206,.5);z-index:6;pointer-events:none"></span><canvas data-gh-canvas style="display:block;width:100%;height:clamp(120px,18vh,170px)"></canvas>
+    </div>
+    <div data-gitlog style="font-family:'JetBrains Mono',monospace;font-size:clamp(12px,1.5vw,14px);border-top:1px solid rgba(176,196,206,.08)"></div>
+  </section>
+
+  <!-- ============ 11 · PREGUNTAS B (slow, hacia Axora) ============ -->
+  <section data-qscene data-screen-label="·" data-tint="84,221,230" style="position:relative;height:225vh">
+    <div style="position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 clamp(24px,8vw,140px)">
+      <sc-for list="{{ qsceneB }}" as="q" hint-placeholder-count="3">
+        <p data-qline style="position:absolute;left:clamp(24px,8vw,140px);right:clamp(24px,8vw,140px);margin:0 auto;max-width:900px;font-family:'JetBrains Mono',monospace;font-weight:300;font-size:clamp(24px,4.6vw,56px);line-height:1.28;letter-spacing:-.015em;color:#bfe6ea;opacity:0;transform:translateY(28px);filter:blur(7px);will-change:opacity,transform,filter">{{ q }}</p>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- ============ 12 · AXORA (clímax) ============ -->
+  <section id="axora" data-screen-label="Axora" data-tint="84,221,230" style="position:relative;padding:15vh clamp(24px,6vw,80px);overflow:hidden">
+    <div style="position:absolute;inset:0;z-index:0;pointer-events:none"><canvas data-axora style="display:block;width:100%;height:100%"></canvas></div>
+    <div style="position:absolute;left:10%;top:18%;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(84,221,230,.22),transparent 70%);filter:blur(40px);z-index:0;animation:orbdrift 18s ease-in-out infinite;pointer-events:none"></div>
+    <div style="position:absolute;right:6%;bottom:8%;width:480px;height:480px;border-radius:50%;background:radial-gradient(circle,rgba(84,221,230,.2),transparent 70%);filter:blur(46px);z-index:0;animation:orbdrift 22s ease-in-out infinite reverse;pointer-events:none"></div>
+    <div style="position:relative;z-index:2;max-width:1000px;margin:0 auto;text-align:center">
+      <p data-reveal style="opacity:0;transform:translateY(24px);transition:opacity 1s ease,transform 1s ease;margin:0 0 22px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:#54dde6">{{ t.axora.kicker }}</p>
+      <h2 data-reveal data-reveal-delay="100" style="opacity:0;transform:translateY(24px);transition:opacity 1.1s cubic-bezier(.16,1,.3,1),transform 1.1s cubic-bezier(.16,1,.3,1);margin:0;font-family:'Newsreader',serif;font-weight:500;font-size:clamp(46px,7.4vw,104px);line-height:1.0;letter-spacing:-.015em;background:linear-gradient(120deg,#54dde6,#c7cbd2 50%,#d8b27a);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">{{ t.axora.title }}</h2>
+      <p data-reveal data-reveal-delay="220" style="opacity:0;transform:translateY(24px);transition:opacity 1.1s cubic-bezier(.16,1,.3,1),transform 1.1s cubic-bezier(.16,1,.3,1);margin:26px 0 0;font-family:'JetBrains Mono',monospace;font-weight:300;font-size:clamp(22px,3.6vw,42px);letter-spacing:-.01em;color:#eef0f7">{{ t.axora.line }}</p>
+      <p data-reveal data-reveal-delay="320" style="opacity:0;transform:translateY(24px);transition:opacity 1.1s cubic-bezier(.16,1,.3,1),transform 1.1s cubic-bezier(.16,1,.3,1);margin:26px auto 0;max-width:600px;font-size:clamp(15px,1.9vw,19px);line-height:1.7;color:#aab0c6">{{ t.axora.sub }}</p>
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin-top:46px">
+        <sc-for list="{{ t.axora.points }}" as="pt" hint-placeholder-count="3">
+          <div data-reveal style="opacity:0;transform:translateY(20px);transition:opacity .9s ease,transform .9s ease;padding:12px 20px;border:1px solid rgba(84,221,230,.3);border-radius:999px;background:rgba(84,221,230,.07);font-size:13.5px;color:#dfe3f0;backdrop-filter:blur(8px)">{{ pt }}</div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 13 · EN CURSO (quiet) ============ -->
+  <section id="ahora" data-screen-label="En curso" data-tint="84,221,230" style="padding:10vh clamp(24px,6vw,90px);max-width:980px;margin:0 auto">
+    <div data-reveal style="opacity:0;transform:translateY(14px);transition:opacity .9s ease,transform .9s ease;display:flex;align-items:center;gap:16px;margin:0 0 clamp(46px,8vh,98px);font-family:'JetBrains Mono',monospace"><span style="width:5px;height:5px;background:#54dde6;transform:rotate(45deg);flex-shrink:0"></span><span data-reg-coord style="font-size:9.5px;letter-spacing:.32em;text-transform:uppercase;color:#8b93a8;flex-shrink:0">43.30°N · 2.93°O</span><span style="flex:1;height:1px;background:rgba(176,196,206,.12)"></span><span data-reg-time style="font-size:9px;letter-spacing:.3em;color:#5c6678;flex-shrink:0">23:51</span></div>
+    <p data-reveal style="opacity:0;transform:translateY(24px);transition:opacity 1s ease,transform 1s ease;margin:0 0 48px;font-size:clamp(16px,2.1vw,21px);line-height:1.5;color:#6b7290;max-width:460px;text-wrap:pretty">{{ t.now.opener }}</p>
+    <div style="display:flex;flex-direction:column">
+      <sc-for list="{{ t.now.items }}" as="n" hint-placeholder-count="4">
+        <div data-reveal style="opacity:0;transform:translateY(20px);transition:opacity .9s ease,transform .9s ease;display:grid;grid-template-columns:auto 1fr;gap:clamp(16px,4vw,40px);padding:clamp(20px,3vh,30px) 0;border-top:1px solid rgba(176,196,206,.12)">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#454e60;padding-top:7px">{{ n.reg }}</span>
+          <div>
+            <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap">
+              <span style="font-family:'Newsreader',serif;font-size:clamp(20px,2.7vw,30px);line-height:1.2;color:#e4e7f0">{{ n.t }}</span>
+              <span style="font-family:'Newsreader',serif;font-style:italic;font-size:clamp(13px,1.5vw,16px);color:#54dde6">— {{ n.label }}</span>
+            </div>
+            <p style="margin:8px 0 0;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.6;letter-spacing:.01em;color:#6b7290">{{ n.note }}</p>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- ============ 14 · FINAL (reflexión → contacto diferido) ============ -->
+  <section id="contacto" data-screen-label="Contacto" data-tint="84,221,230" style="min-height:140vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:18vh clamp(24px,6vw,80px) 10vh">
+    <div data-reveal style="opacity:0;transition:opacity 1.2s ease;display:flex;align-items:center;justify-content:center;gap:14px;margin:0 0 clamp(42px,8vh,84px);font-family:'JetBrains Mono',monospace"><span style="width:36px;height:1px;background:linear-gradient(90deg,transparent,#d8b27a)"></span><span style="font-size:9.5px;letter-spacing:.46em;text-transform:uppercase;color:#d8b27a">§ fin</span><span style="width:36px;height:1px;background:linear-gradient(90deg,#d8b27a,transparent)"></span></div>
+    <h2 data-reveal style="opacity:0;transform:translateY(24px);transition:opacity 1.6s cubic-bezier(.16,1,.3,1),transform 1.6s cubic-bezier(.16,1,.3,1);margin:0;font-family:'JetBrains Mono',monospace;font-weight:300;font-size:clamp(28px,5.6vw,72px);line-height:1.16;letter-spacing:-.03em;color:#eef0f7;text-wrap:balance;max-width:920px">{{ t.contact.thought }}</h2>
+    <div data-final-reveal style="opacity:0;transform:translateY(20px);transition:opacity 1.8s ease,transform 1.8s ease;display:flex;flex-direction:column;align-items:center;gap:30px;margin-top:clamp(60px,12vh,130px)">
+      <p style="margin:0;max-width:440px;font-size:clamp(14px,1.7vw,17px);line-height:1.65;color:#8088a0">{{ t.contact.sub }}</p>
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:13px">
+        <a href="mailto:hola@juanesteban.dev" data-magnetic style="text-decoration:none;display:inline-flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.06em;color:#0a0d11;background:linear-gradient(120deg,#54dde6,#2bbac4);box-shadow:0 0 22px rgba(84,221,230,.26);padding:14px 26px;border-radius:999px;font-weight:500">{{ t.contact.email }} ↗</a>
+        <a href="https://github.com/jegomez23" target="_blank" rel="noopener" data-magnetic style="text-decoration:none;display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.06em;color:#eef0f7;border:1px solid rgba(176,196,206,.16);padding:14px 22px;border-radius:999px;background:rgba(255,255,255,.03)">GitHub</a>
+        <a href="#" data-magnetic style="text-decoration:none;display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.06em;color:#eef0f7;border:1px solid rgba(176,196,206,.16);padding:14px 22px;border-radius:999px;background:rgba(255,255,255,.03)">LinkedIn</a>
+      </div>
+      <div style="margin-top:6vh;display:flex;align-items:center;gap:10px;color:#3a4058;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em">
+        <span style="width:6px;height:6px;border-radius:50%;background:linear-gradient(135deg,#d8b27a,#caa15f)"></span>
+        Juan Esteban Gómez · {{ t.contact.place }}
+      </div>
+    </div>
+  </section>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:&quot;100%&quot;}}">
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this.state = { lang:'es', activeProjectId:'axora', profileOpen:false };
+    this._cleanups = [];
+    this._raf = {};
+    this._scrollFns = [];
+    this._glTimers = [];
+    this._tint = '84,221,230';
+    this._freeze = false;
+
+    this.FILTERS = [
+      {key:'ai', es:'IA', en:'AI'}, {key:'dev', es:'En desarrollo', en:'In progress'},
+      {key:'web', es:'App', en:'App'}, {key:'exp', es:'Laboratorio', en:'Lab'},
+    ];
+
+    this.PROJECTS = [
+      { id:'axora', catKey:'ai', year:'2025', accent:'#54dde6', rgb:'84,221,230', status:{es:'En marcha',en:'In motion'}, statusColor:'#54dde6',
+        name:{es:'Axora',en:'Axora'}, stack:['Next.js','TypeScript','IA','Automatización','Stripe'],
+        long:{es:'Empecé notando cuántos negocios pierden horas en tareas que nadie quiere hacer. Con el tiempo entendí que a la gente no le importa la “IA” en sí, le importa recuperar su tiempo. Por eso terminé armando agentes y automatizaciones que se integran en lo que la empresa ya usa.', en:'I started noticing how many businesses lose hours on tasks nobody wants to do. Over time I understood people don\u2019t really care about “AI” itself, they care about getting their time back. So I ended up building agents and automations that fit into what the company already uses.'},
+        learned:{es:'Que, muchas veces, explicar la solución en el lenguaje del negocio convence más que una demo técnica.', en:'That, more often than not, explaining the solution in the business\u2019s own language convinces more than a technical demo.'},
+        decLabel:{es:'La decisión más difícil', en:'The hardest decision'},
+        dec:{es:'Decir que no a clientes que querían “una IA” sin un problema claro detrás. Preferí empezar por el problema aunque eso frenara la venta.', en:'Saying no to clients who wanted “an AI” with no clear problem behind it. I chose to start from the problem even when it slowed the sale.'},
+        stats:[ {n:'IA', l:{es:'En el centro',en:'At the center'}}, {n:'24/7', l:{es:'Trabajando',en:'Working'}}, {n:'real', l:{es:'Negocios',en:'Businesses'}} ],
+        snippet:"const agente = await axora.crear({\n  tareas: ['responder', 'agendar', 'seguir'],\n  meta: 'que el negocio respire',\n});\nagente.trabaja();" },
+      { id:'gym', catKey:'dev', year:'2025', accent:'#54dde6', rgb:'84,221,230', status:{es:'Construyéndose',en:'Being built'}, statusColor:'#54dde6',
+        name:{es:'Gym Circle',en:'Gym Circle'}, stack:['React','Next.js','Supabase','PostgreSQL'],
+        long:{es:'Probé un montón de apps fitness y todas me motivaban los primeros días; después las dejaba. Con el tiempo empecé a pensar que quizá el problema no eran las funciones, sino que uno nunca siente que pertenece a algo. De ahí salió la idea, todavía en construcción, de armarla como un círculo, donde el progreso se comparte.', en:'I tried a bunch of fitness apps and they all motivated me the first few days; then I\u2019d drop them. Over time I started to think maybe the problem wasn\u2019t the features, but that you never feel you belong to anything. That\u2019s where the idea came from, still in progress: build it as a circle, where progress is shared.'},
+        learned:{es:'Que las decisiones de producto pesan más que las técnicas: defino el “para quién” antes de elegir el cómo.', en:'That product decisions weigh more than technical ones: I define the “who for” before choosing the how.'},
+        decLabel:{es:'Lo que haría distinto hoy', en:'What I’d do differently today'},
+        dec:{es:'Empecé puliendo la interfaz antes de validar si la gente volvería. Hoy probaría la retención con algo mínimo antes de diseñar de más.', en:'I started polishing the interface before validating whether people would return. Today I’d test retention with something minimal before over-designing.'},
+        stats:[ {n:'WIP', l:{es:'En curso',en:'Ongoing'}}, {n:'PWA', l:{es:'Web + móvil',en:'Web + mobile'}}, {n:'2025', l:{es:'Pronto',en:'Soon'}} ],
+        snippet:"function Circulo({ progreso }) {\n  // el progreso se siente, no solo se ve\n  return <Anillo valor={progreso} vivo />;\n}" },
+      { id:'night', catKey:'web', year:'2024', accent:'#54dde6', rgb:'84,221,230', status:{es:'En uso',en:'In use'}, statusColor:'#54dde6',
+        name:{es:'Nightclub Manager',en:'Nightclub Manager'}, stack:['React','Supabase','Auth','REST'],
+        long:{es:'Esto salió de alguien real que llevaba un local de noche con hojas de cálculo y mensajes sueltos. Viéndolo trabajar me quedó claro que, si los datos no son en tiempo real, siempre llegan tarde. Así que armé una app donde personal, stock, reservas y caja se sincronizan al instante.', en:'This came from someone real running a nightspot with spreadsheets and scattered messages. Watching them work, it became clear that if the data isn\u2019t real-time, it always arrives too late. So I built an app where staff, stock, bookings and cash sync instantly.'},
+        learned:{es:'Que el mejor feedback aparece viendo a alguien usar tu producto en su contexto real, no en tu cabeza.', en:'That the best feedback shows up watching someone use your product in their real context, not in your head.'},
+        decLabel:{es:'La suposición que cambió', en:'The assumption that changed'},
+        dec:{es:'Asumí que querían más funciones. Hablando con quien lo usaba entendí que pedían menos pasos, no más opciones.', en:'I assumed they wanted more features. Talking with the person using it, I understood they wanted fewer steps, not more options.'},
+        stats:[ {n:'live', l:{es:'Tiempo real',en:'Real time'}}, {n:'todo', l:{es:'En un sitio',en:'In one place'}}, {n:'🔒', l:{es:'Seguro',en:'Secure'}} ],
+        snippet:"supabase.channel('sala')\n  .on('cambios', refrescar)\n  .subscribe();\n// la noche, bajo control" },
+      { id:'notes', catKey:'web', year:'2024', accent:'#54dde6', rgb:'84,221,230', status:{es:'En uso',en:'In use'}, statusColor:'#54dde6',
+        name:{es:'Notes App',en:'Notes App'}, stack:['Next.js','TypeScript','Zustand','PostgreSQL'],
+        long:{es:'Las apps de notas que probé metían un instante de fricción entre la idea y guardarla, y ese instante me molestaba. Terminé pensando que cada milisegundo ahí es una idea que se pierde. Así que hice una herramienta mínima y rápida, con lo justo para no estorbar.', en:'The note apps I tried put a split second of friction between the idea and saving it, and that bugged me. I ended up thinking every millisecond there is a lost idea. So I made a minimal, fast tool, with just enough to stay out of the way.'},
+        learned:{es:'Que resolver bien tu propio problema, muchas veces, termina resolviéndoselo a más gente de la que uno pensaba.', en:'That solving your own problem well, more often than not, ends up solving it for more people than you expected.'},
+        decLabel:{es:'Lo que haría distinto hoy', en:'What I’d do differently today'},
+        dec:{es:'Lo construí solo para mí. Hoy enseñaría un prototipo a un par de personas antes, para no confundir mi gusto con el del usuario.', en:'I built it just for me. Today I’d show a prototype to a couple of people first, so I don’t mistake my taste for the user’s.'},
+        stats:[ {n:'rápido', l:{es:'Sin fricción',en:'No friction'}}, {n:'sync', l:{es:'Donde sea',en:'Anywhere'}}, {n:'mío', l:{es:'Hecho a medida',en:'Built for me'}} ],
+        snippet:"const notas = create((set) => ({\n  lista: [],\n  guardar: (n) => set(s => ({ lista:[n,...s.lista] })),\n}));" },
+      { id:'exp', catKey:'exp', year:'2023→', accent:'#54dde6', rgb:'84,221,230', status:{es:'Siempre abierto',en:'Always open'}, statusColor:'#54dde6',
+        name:{es:'El laboratorio',en:'The lab'}, stack:['React','GSAP','Canvas','CSS'],
+        long:{es:'Este no es problema de ningún cliente, es mío: necesitaba un lugar donde probar ideas sin que pasara nada si fallaban. Así que armé un laboratorio abierto, con landings, animaciones e interfaces. La mayoría no llega a nada, y con el tiempo entendí que ese es justo el punto.', en:'This one isn\u2019t any client\u2019s problem, it\u2019s mine: I needed a place to test ideas where nothing bad happens if they fail. So I set up an open lab, with landings, animations and interfaces. Most go nowhere, and over time I understood that\u2019s exactly the point.'},
+        learned:{es:'Que equivocarse rápido y barato, para mí, ha sido una de las formas más honestas de aprender.', en:'That failing fast and cheap has been, for me, one of the most honest ways to learn.'},
+        decLabel:{es:'La suposición que cambió', en:'The assumption that changed'},
+        dec:{es:'Creía que cada experimento debía terminarse. Cambié de idea: la mayoría existen para descartar una hipótesis rápido, y con eso ya cumplen.', en:'I used to think every experiment had to be finished. I changed my mind: most exist to discard a hypothesis fast, and that’s enough.'},
+        stats:[ {n:'∞', l:{es:'Intentos',en:'Attempts'}}, {n:'60fps', l:{es:'Obsesión',en:'Obsession'}}, {n:'open', l:{es:'Sin miedo',en:'No fear'}} ],
+        snippet:"gsap.to('.idea', {\n  opacity: 1, y: 0, stagger: .08,\n  ease: 'expo.out',\n});\n// a ver qué pasa" },
+    ];
+
+    this.TECH = [
+      { id:'react', label:'React', group:'fe' }, { id:'next', label:'Next.js', group:'fe' },
+      { id:'ts', label:'TypeScript', group:'fe' }, { id:'js', label:'JavaScript', group:'fe' },
+      { id:'tw', label:'Tailwind', group:'fe' }, { id:'css', label:'CSS', group:'fe' },
+      { id:'html', label:'HTML', group:'fe' }, { id:'zustand', label:'Zustand', group:'fe' },
+      { id:'pwa', label:'PWA', group:'fe' }, { id:'resp', label:'Responsive', group:'fe' },
+      { id:'rest', label:'REST', group:'data' }, { id:'supa', label:'Supabase', group:'data' },
+      { id:'pg', label:'PostgreSQL', group:'data' }, { id:'sql', label:'SQL', group:'data' },
+      { id:'auth', label:'Auth', group:'data' }, { id:'docker', label:'Docker', group:'infra' },
+      { id:'git', label:'Git', group:'infra' }, { id:'github', label:'GitHub', group:'infra' },
+      { id:'deploy', label:'Deploy', group:'infra' }, { id:'stripe', label:'Stripe', group:'pay' },
+      { id:'ai', label:'IA', group:'ai' },
+    ];
+    this.TECH_LINKS = [
+      ['react','next'],['react','ts'],['react','js'],['react','tw'],['react','css'],['css','html'],
+      ['react','zustand'],['next','pwa'],['next','resp'],['next','rest'],['next','stripe'],['next','ai'],
+      ['rest','supa'],['supa','pg'],['supa','auth'],['supa','sql'],['pg','sql'],['ai','supa'],
+      ['docker','deploy'],['git','github'],['github','deploy'],['next','deploy'],['git','next'],
+    ];
+    this.ORBIT_RINGS = [
+      { ids:['ai','react','next','ts'], f:0.30, speed:0.085, always:true },
+      { ids:['js','tw','css','html','zustand'], f:0.55, speed:-0.058 },
+      { ids:['rest','supa','pg','sql','auth'], f:0.78, speed:0.044 },
+      { ids:['docker','git','github','deploy','stripe','pwa','resp'], f:1.0, speed:-0.03 },
+    ];
+    this.GROUP_COLOR = { fe:'#54dde6', data:'#54dde6', infra:'#9aa0b4', pay:'#54dde6', ai:'#54dde6' };
+
+    this.T = {
+      es:{
+        intro:{ words:['Hay personas que observan cómo son las cosas.','Otras no pueden evitar preguntarse por qué son así.','Creo que siempre he pertenecido a ese segundo grupo.'], name:'Juan Esteban Gómez', role:'Me interesa entender por qué algunos productos funcionan mejor que otros. Programar es la forma que encontré de explorar esa pregunta.', scroll:'Sigue' },
+        profile:{ name:'Juan Esteban Gómez', k1:'Rol', v1:'Full Stack Developer Junior · Product-minded', k2:'Base', v2:'País Vasco, España', k3:'Origen', v3:'Colombia', close:'Cerrar', photo:'foto', gallery:'Galería' },
+        manifesto:{ line:'Con los años entendí que lo difícil casi nunca es el código.',sub:'No creo que me guste programar por el código en sí. Me gusta porque, cuando sale, convierte una idea en algo que se puede tocar. La tecnología terminó siendo mi herramienta; entender a la gente y el negocio detrás, casi siempre, el motivo.' },
+        about:[
+          {k:'01', text:'Soy Full Stack: me muevo entre frontend, backend y producto sin necesitar que otro cierre lo que empecé.'},
+          {k:'02', text:'No construyo por construir. Antes me pregunto qué vale la pena hacer y qué se puede dejar para después.'},
+          {k:'03', text:'Las mejores decisiones casi nunca las tomo solo: pregunto a diseño, a producto y a quien lo va a usar.'},
+          {k:'04', text:'Me importa que lo que sale funcione para el usuario y también le sirva al negocio.'},
+        ],
+        qA:['Antes de “¿cómo lo construimos?”…','siempre viene otra pregunta.','“¿Para quién, y por qué?”'],
+        qB:['¿Y si la tecnología pudiera hacer más que automatizar tareas?','¿Y si pudiera ayudar a las personas a pensar mejor?','Últimamente me pregunto qué problemas valen de verdad la pena.'],
+        journey:{ opener:'Esto no es un currículum. Es cómo fue cambiando mi forma de ver las cosas.', items:[
+          {year:'crear', d:'Descubrí que me gustaba crear. No un objeto concreto: la sensación de pasar de una idea a algo que existe.'},
+          {year:'los negocios', d:'Me empezó a interesar cómo funcionan los negocios. Por qué algunos conectan con la gente y otros no.'},
+          {year:'marketing', d:'Aprendí marketing antes que software, y se me quedó dentro: entender a las personas, el negocio y cómo se comunica una idea hoy guía cómo priorizo cada decisión técnica.'},
+          {year:'el para qué', d:'Me di cuenta de que la tecnología sin un propósito no me bastaba. Que algo funcione no es lo mismo que algo sirva.'},
+          {year:'la ia', d:'La inteligencia artificial cambió la forma en que imagino los productos. De un momento a otro se podían construir cosas que antes ni me imaginaba.'},
+          {year:'full stack', d:'Decidí ser Full Stack porque quería construir soluciones completas, sin depender de nadie para llevar una idea hasta el final.'},
+          {year:'axora', d:'Axora se volvió el sitio donde se juntan todos esos intereses: negocios, IA, diseño, curiosidad. Una sola dirección.'},
+          {year:'hoy', d:'Hoy sigo aprendiendo. No tengo esto resuelto, y creo que esa es la parte que más me gusta.'},
+          {year:'→', d:'Cada vez lo veo menos como llegar a algún lado, y más como seguir.'},
+        ]},
+        build:{ items:[
+          {k:'01', t:'Conecto el código con el negocio', d:'Con el tiempo noté que casi toda decisión técnica termina tocando un objetivo de negocio. Me gusta tener los dos lados delante antes de elegir.'},
+          {k:'02', t:'Pregunto antes de construir', d:'Prefiero incomodar con un “¿por qué?” a tiempo que construir rápido algo que no hacía falta construir.'},
+          {k:'03', t:'Me muevo entre disciplinas', d:'Diseño, producto e ingeniería no son compartimentos. He notado que las mejores ideas aparecen justo en los cruces.'},
+          {k:'04', t:'Cuido lo que se nota y lo que no', d:'El detalle que el usuario siente y el que nunca verá. Los dos sostienen la misma experiencia.'},
+          {k:'05', t:'Quiero entender el producto entero', d:'No solo mi tarea. Ver el sistema completo —usuario, negocio, técnica— es lo que me deja aportar de verdad.'},
+        ]},
+        rewrite:{ prefix:'Casi siempre termino construyendo', words:['experiencias.','herramientas.','productos.','respuestas.','preguntas.'] },
+        projects:{ aside:'Elige uno →', visit:'Ver el código', learned:'Lo que aprendí' },
+        tech:{ hint:'Las herramientas con las que trabajo. Importan menos que el porqué de cada una — toca un nodo para ver cómo se conectan.', count:'21', unit:'herramientas', frame:'Sistemas en relación' },
+        github:{ intro:'Aquí vive lo que hago cuando nadie mira. Repos abiertos, errores incluidos.', user:'@jegomez23' },
+        axora:{ kicker:'uno de mis experimentos', title:'Axora', line:'Una excusa para seguir creando.', sub:'No diría que Axora es el destino. Para mí es más bien la prueba de que disfruto construyendo: un sitio donde voy juntando negocio, IA y diseño para resolver cosas reales. Uno de varios experimentos, no el final del camino.', points:['Negocio + IA + diseño','Resolver, no impresionar','Una excusa para crear'] },
+        now:{ opener:'Lo que tengo abierto ahora mismo, sin terminar.', items:[
+          {t:'Agentes de IA y cómo orquestarlos', label:'aprendiendo', reg:'R·01', note:'Dónde termina la automatización y empieza el criterio.'},
+          {t:'Three.js y el lado visual del código', label:'explorando', reg:'R·02', note:'Aún se me resiste, y por eso me gusta.'},
+          {t:'Pensar en productos, no en features', label:'en ello', reg:'R·03', note:'La pregunta es para quién, antes que el cómo.'},
+          {t:'Bases de datos que aguanten de verdad', label:'afianzando', reg:'R·04', note:'Lo aburrido que sostiene todo lo demás.'},
+        ]},
+        contact:{ thought:'Creo que aporto más cuando mi forma de pensar encaja con cómo un equipo construye sus productos. Si te suena, me gustaría que habláramos.', sub:'Sigo aprendiendo, y esa es la parte que más disfruto. Si tienes algo entre manos, escríbeme.', email:'Hablemos', place:'País Vasco' },
+        egg:'· sigues aquí. gracias por quedarte a mirar.',
+        apparatus:{ spine:'Cuaderno de investigación', coord:'43.26°N · 2.92°O' },
+        stages:['Observación','Premisa','Hipótesis','Pregunta','Registro','Método','Iteración','Experimentos','Instrumentos','Evidencia','Pregunta','Descubrimiento','En curso','Conclusión'],
+        repos:[
+          {name:'axora', desc:'la agencia. donde la ia trabaja.', lang:'TypeScript', color:'#54dde6'},
+          {name:'gym-circle', desc:'fitness, en construcción.', lang:'TypeScript', color:'#54dde6'},
+          {name:'nightclub-manager', desc:'gestión para la noche.', lang:'JavaScript', color:'#a6ecf0'},
+          {name:'notes-app', desc:'ideas sin fricción.', lang:'TypeScript', color:'#54dde6'},
+          {name:'ui-experiments', desc:'el laboratorio abierto.', lang:'CSS', color:'#2f9aa1'},
+          {name:'portfolio', desc:'esto que estás mirando.', lang:'HTML', color:'#7fdfe6'},
+        ],
+      },
+      en:{
+        intro:{ words:['Some people observe how things are.','Others can\u2019t help asking why they are that way.','I think I\u2019ve always belonged to that second group.'], name:'Juan Esteban Gómez', role:'I\u2019m interested in understanding why some products work better than others. Programming is the way I found to explore that question.', scroll:'Go on' },
+        profile:{ name:'Juan Esteban Gómez', k1:'Role', v1:'Full Stack Developer Junior · Product-minded', k2:'Based in', v2:'Basque Country, Spain', k3:'Origin', v3:'Colombia', close:'Close', photo:'photo', gallery:'Gallery' },
+        manifesto:{ line:'Over the years I learned the hard part is rarely the code.', sub:'I don\u2019t think I love programming for the code itself. I love it because, when it works, it turns an idea into something you can touch. Technology ended up being my tool; understanding people and the business behind it, more often than not, the reason.' },
+        about:[
+          {k:'01', text:'I\u2019m Full Stack: I move between frontend, backend and product without needing someone else to finish what I started.'},
+          {k:'02', text:'I don\u2019t build just to build. First I ask what\u2019s worth doing and what can wait.'},
+          {k:'03', text:'The best decisions are almost never mine alone: I ask design, product and the people who\u2019ll use it.'},
+          {k:'04', text:'I care that what ships works for the user and also helps the business.'},
+        ],
+        qA:['Before “how do we build it?”…','there\u2019s always another question.','“Who for, and why?”'],
+        qB:['What if technology could do more than automate tasks?','What if it could help people think better?','Lately I find myself wondering which problems are actually worth solving.'],
+        journey:{ opener:'This isn\u2019t a résumé. It\u2019s how my way of seeing things kept changing.', items:[
+          {year:'creating', d:'I found out I liked creating. Not one specific object: the feeling of going from an idea to something that exists.'},
+          {year:'business', d:'I got interested in how businesses work. Why some connect with people and others don\u2019t.'},
+          {year:'marketing', d:'I learned marketing before software, and it stuck: understanding people, business and how an idea is communicated now guides how I prioritize every technical decision.'},
+          {year:'the why', d:'I realized technology without a purpose wasn\u2019t enough for me. Something working isn\u2019t the same as something helping.'},
+          {year:'ai', d:'Artificial intelligence changed the way I imagine products. All of a sudden it was possible to build things I hadn\u2019t even imagined before.'},
+          {year:'full stack', d:'I decided to become Full Stack because I wanted to build complete solutions, without depending on anyone to take an idea all the way.'},
+          {year:'axora', d:'Axora became the place where all those interests meet: business, AI, design, curiosity. One single direction.'},
+          {year:'today', d:'Today I\u2019m still learning. I don\u2019t have this figured out, and I think that\u2019s the part I like most.'},
+          {year:'→', d:'Lately I see it less as a story about arriving, and more about continuing.'},
+        ]},
+        build:{ items:[
+          {k:'01', t:'I connect code with the business', d:'Over time I noticed almost every technical decision ends up touching a business goal. I like having both sides in front of me before I choose.'},
+          {k:'02', t:'I ask before building', d:'I\u2019d rather be the awkward “why?” on time than quickly build something that didn\u2019t need building.'},
+          {k:'03', t:'I move across disciplines', d:'Design, product and engineering aren\u2019t separate boxes. I\u2019ve noticed the best ideas show up right at the crossings.'},
+          {k:'04', t:'I care about the seen and the unseen', d:'The detail the user feels and the one they\u2019ll never see. Both hold up the same experience.'},
+          {k:'05', t:'I want to understand the whole product', d:'Not just my task. Seeing the full system —user, business, tech— is what lets me actually contribute.'},
+        ]},
+        rewrite:{ prefix:'More often than not I end up building', words:['experiences.','tools.','products.','answers.','questions.'] },
+        projects:{ aside:'Pick one →', visit:'View the code', learned:'What I learned' },
+        tech:{ hint:'The tools I work with. They matter less than the reason behind each one — touch a node to see how they connect.', count:'21', unit:'tools', frame:'Systems in relation' },
+        github:{ intro:'This is where my work lives when no one\u2019s watching. Open repos, mistakes included.', user:'@jegomez23' },
+        axora:{ kicker:'one of my experiments', title:'Axora', line:'An excuse to keep creating.', sub:'I wouldn\u2019t call Axora the destination. To me it\u2019s more like proof that I enjoy building: a place where I keep bringing together business, AI and design to solve real things. One of several experiments, not the end of the road.', points:['Business + AI + design','Solve, don\u2019t impress','An excuse to create'] },
+        now:{ opener:'What I\u2019ve got open right now, unfinished.', items:[
+          {t:'AI agents and how to orchestrate them', label:'learning', reg:'R·01', note:'Where automation ends and judgement begins.'},
+          {t:'Three.js and the visual side of code', label:'exploring', reg:'R·02', note:'Still resists me, which is why I like it.'},
+          {t:'Thinking in products, not features', label:'on it', reg:'R·03', note:'The question is who for, before the how.'},
+          {t:'Databases that actually hold up', label:'solidifying', reg:'R·04', note:'The boring part that holds everything else.'},
+        ]},
+        contact:{ thought:'I think I add the most when the way I think fits how a team builds its products. If that sounds like you, I\u2019d like us to talk.', sub:'I\u2019m still learning, and that\u2019s the part I enjoy most. If you\u2019ve got something in motion, write to me.', email:'Let\u2019s talk', place:'Basque Country' },
+        egg:'· still here. thank you for staying to look.',
+        apparatus:{ spine:'Research notebook', coord:'43.26°N · 2.92°W' },
+        stages:['Observation','Premise','Hypothesis','Question','Archive','Method','Iteration','Experiments','Instruments','Evidence','Question','Discovery','In progress','Conclusion'],
+        repos:[
+          {name:'axora', desc:'the agency. where ai works.', lang:'TypeScript', color:'#54dde6'},
+          {name:'gym-circle', desc:'fitness, under construction.', lang:'TypeScript', color:'#54dde6'},
+          {name:'nightclub-manager', desc:'management for the night.', lang:'JavaScript', color:'#a6ecf0'},
+          {name:'notes-app', desc:'ideas without friction.', lang:'TypeScript', color:'#54dde6'},
+          {name:'ui-experiments', desc:'the open lab.', lang:'CSS', color:'#2f9aa1'},
+          {name:'portfolio', desc:'this thing you\u2019re looking at.', lang:'HTML', color:'#7fdfe6'},
+        ],
+      },
+    };
+  }
+
+  reduced(){ try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch(e){ return false; } }
+  isTouch(){ try { return window.matchMedia('(hover: none)').matches; } catch(e){ return false; } }
+  $(s){ return this.el ? this.el.querySelector(s) : document.querySelector(s); }
+  $all(s){ return Array.from(this.el ? this.el.querySelectorAll(s) : document.querySelectorAll(s)); }
+
+  toggleLang = () => this.setState(s => ({ lang: s.lang === 'es' ? 'en' : 'es' }));
+  revealPhoto = (e) => {
+    const cell = e.currentTarget;
+    const color = cell.querySelector('[data-color-layer]');
+    if(!color) return;
+    const on = cell.getAttribute('data-revealed') === '1';
+    if(on){
+      color.style.opacity = '0';
+      cell.setAttribute('data-revealed','0');
+      cell.style.borderColor = 'rgba(84,221,230,.18)';
+    } else {
+      color.style.opacity = '1';
+      cell.setAttribute('data-revealed','1');
+      cell.style.borderColor = 'rgba(84,221,230,.55)';
+    }
+  };
+  openProfile = () => this.setState({ profileOpen:true });
+  closeProfile = () => this.setState({ profileOpen:false });
+  setActiveProject = (id) => () => this.setState({ activeProjectId:id });
+
+  renderVals(){
+    const L = this.state.lang;
+    const t = this.T[L];
+    const manifestoWords = t.manifesto.line.split(' ');
+    const sizes = ['clamp(26px,4.4vw,54px)','clamp(28px,5vw,64px)','clamp(34px,6.4vw,88px)','clamp(26px,4.4vw,54px)'];
+    const aligns = ['', '', 'padding-left:clamp(0px,6vw,90px)', 'opacity:.92'];
+    const aboutStatements = t.about.map((s,i) => ({ k:s.k, text:s.text, size:sizes[i]||sizes[0], align:aligns[i]||'' }));
+    const projectsNav = this.PROJECTS.map((p,i) => {
+      const active = p.id === this.state.activeProjectId;
+      const style = "all:unset;box-sizing:border-box;cursor:none;display:flex;align-items:baseline;gap:9px;padding:5px 0;border-bottom:1.5px solid "+(active?'#54dde6':'transparent')+";transition:color .4s ease,opacity .4s ease,border-color .4s ease;"
+        + (active ? "color:#ffffff;opacity:1;" : "color:#6b7290;opacity:.55;");
+      return { id:p.id, num:String(i+1).padStart(2,'0'), name:p.name[L], onClick:this.setActiveProject(p.id), style };
+    });
+    const stageProjects = this.PROJECTS.map(p => ({ id:p.id }));
+    const ap = this.PROJECTS.find(p => p.id === this.state.activeProjectId) || this.PROJECTS[0];
+    const catA = this.FILTERS.find(f => f.key === ap.catKey);
+    const stage = {
+      id:ap.id, name:ap.name[L], catLabel:catA?catA[L]:'', year:ap.year, accent:ap.accent,
+      status:ap.status[L], statusColor:ap.statusColor, long:ap.long[L], learned:ap.learned?ap.learned[L]:'', decLabel:ap.decLabel?ap.decLabel[L]:'', dec:ap.dec?ap.dec[L]:'', stack:ap.stack, snippet:ap.snippet,
+      stats: ap.stats.map(s => ({ n:s.n, l:s.l[L] })),
+    };
+    const po = this.state.profileOpen;
+    const panelStyle = 'position:fixed;top:0;left:0;height:100vh;width:min(348px,80vw);z-index:90;background:rgba(11,15,20,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-right:1px solid rgba(84,221,230,.18);box-shadow:'+(po?'32px 0 80px -20px rgba(0,0,0,.7)':'0 0 0 rgba(0,0,0,0)')+';display:flex;flex-direction:column;justify-content:flex-start;overflow-y:auto;padding:clamp(64px,9vh,92px) clamp(28px,4vw,48px) clamp(40px,7vh,64px);transform:translateX('+(po?'0':'-101%')+');transition:transform .6s cubic-bezier(.22,1,.28,1),box-shadow .6s ease;will-change:transform';
+    const overlayStyle = 'position:fixed;inset:0;z-index:85;background:rgba(6,10,14,.34);opacity:'+(po?'1':'0')+';pointer-events:'+(po?'auto':'none')+';transition:opacity .5s ease';
+    const panelInnerStyle = 'opacity:'+(po?'1':'0')+';transform:translateX('+(po?'0':'-16px')+');transition:opacity .5s ease '+(po?'.16s':'0s')+',transform .6s cubic-bezier(.22,1,.28,1) '+(po?'.16s':'0s')+'';
+    return { t, lang:L, langLabel:L==='es'?'EN':'ES', toggleLang:this.toggleLang, revealPhoto:this.revealPhoto, openProfile:this.openProfile, closeProfile:this.closeProfile, profileOpen:this.state.profileOpen, panelStyle, overlayStyle, panelInnerStyle, manifestoWords, aboutStatements, qsceneA:t.qA, qsceneB:t.qB, projectsNav, stageProjects, stage };
+  }
+
+  componentDidMount(){
+    const safe = (fn) => { try { fn(); } catch(e){ console.warn('init skip', e); } };
+    safe(()=>this.runIntro());
+    safe(()=>this.initCursor());
+    safe(()=>this.initMagnetic());
+    safe(()=>this.initReveals());
+    safe(()=>this.initBackground());
+    safe(()=>this.initManifesto());
+    safe(()=>this.initAbout());
+    safe(()=>this.initQuestionScenes());
+    safe(()=>this.initTimeline());
+    safe(()=>this.initBuild());
+    safe(()=>this.initRewrite());
+    safe(()=>this.initProjectStage());
+    safe(()=>this.initOrbits());
+    safe(()=>this.initGithubCanvas());
+    safe(()=>this.fillGitlog());
+    safe(()=>this.initAxora());
+    safe(()=>this.initCalmEnding());
+    safe(()=>this.initEasterEgg());
+    safe(()=>this.initScroll());
+  }
+  componentDidUpdate(prevP, prevS){
+    if(prevS.activeProjectId !== this.state.activeProjectId){ try{ this.applyStage(); }catch(e){} }
+    if(prevS.lang !== this.state.lang){
+      try{ this.fillGitlog(); }catch(e){}
+      try{ this.initRewrite(true); }catch(e){}
+      try{ this._scrollFns.forEach(fn=>fn()); }catch(e){}
+    }
+  }
+  componentWillUnmount(){
+    this._cleanups.forEach(fn => { try{ fn(); }catch(e){} });
+    Object.values(this._raf).forEach(id => cancelAnimationFrame(id));
+    this._glTimers.forEach(id => clearTimeout(id));
+    if(this._eggTimer) clearTimeout(this._eggTimer);
+    if(this._rwTimer) clearTimeout(this._rwTimer);
+  }
+
+  /* ---------- INTRO ---------- */
+  runIntro(){
+    const root = this.el || document;
+    const words = Array.from(root.querySelectorAll('[data-intro-word]'));
+    const name = root.querySelector('[data-intro-name]');
+    const cue = root.querySelector('[data-intro-cue]');
+    if(!words.length) return;
+    const show = el => { if(el){ el.style.opacity='1'; el.style.transform='translateY(0)'; } };
+    const hide = el => { if(el){ el.style.opacity='0'; el.style.transform='translateY(-22px)'; } };
+    if(this.reduced()){ words.forEach(w=>w.style.display='none'); show(name); show(cue); return; }
+    const seq=[]; const at=(ms,fn)=>seq.push(setTimeout(fn,ms)); let done=false;
+    const finish=()=>{ if(done)return; done=true; words.forEach(hide); show(name); at(400,()=>show(cue)); };
+    at(500,()=>show(words[0])); at(2300,()=>hide(words[0]));
+    at(2650,()=>show(words[1])); at(4600,()=>hide(words[1]));
+    at(4950,()=>show(words[2])); at(6900,()=>hide(words[2])); at(7250,finish);
+    const skip=()=>{ if(window.scrollY>40||done){ seq.forEach(clearTimeout); finish(); window.removeEventListener('scroll',skip); window.removeEventListener('wheel',skip); } };
+    window.addEventListener('scroll',skip,{passive:true}); window.addEventListener('wheel',skip,{passive:true});
+    this._cleanups.push(()=>{ seq.forEach(clearTimeout); window.removeEventListener('scroll',skip); window.removeEventListener('wheel',skip); });
+  }
+
+  /* ---------- CURSOR (section-evolving) ---------- */
+  initCursor(){
+    if(this.isTouch()) return;
+    const dot=this.$('[data-cursor-dot]'), ring=this.$('[data-cursor-ring]');
+    if(!dot||!ring) return;
+    let mx=innerWidth/2,my=innerHeight/2,rx=mx,ry=my,dx=mx,dy=my,onItem=false;
+    const move=e=>{ mx=e.clientX; my=e.clientY; this._lastMove=performance.now(); };
+    const over=e=>{ onItem = !!e.target.closest('a,button,[data-magnetic],[data-acc-head]'); };
+    window.addEventListener('mousemove',move); window.addEventListener('mouseover',over);
+    const secs=this.$all('section[data-tint]');
+    const logIdx=this.$('[data-log-idx]'), logWord=this.$('[data-log-word]'), logBox=this.$('[data-log]');
+    const setStage=(target)=>{ const i=secs.indexOf(target); if(i<0) return; const words=this.T[this.state.lang].stages||[]; const w=words[i]; if(!w||!logWord) return;
+      if(logBox) logBox.style.opacity='0';
+      setTimeout(()=>{ if(logIdx) logIdx.textContent=String(i).padStart(2,'0'); logWord.textContent=w; if(logBox) logBox.style.opacity='1'; }, 200); };
+    const io=new IntersectionObserver((es)=>{ es.forEach(en=>{ if(en.isIntersecting){ const tn=en.target.getAttribute('data-tint'); if(tn) this._tint=tn; setStage(en.target); } }); }, {threshold:0.5});
+    secs.forEach(s=>io.observe(s));
+    const loop=()=>{
+      dx+=(mx-dx)*0.4; dy+=(my-dy)*0.4; rx+=(mx-rx)*0.16; ry+=(my-ry)*0.16;
+      dot.style.transform=`translate(${dx-2.5}px,${dy-2.5}px)`;
+      const sz=onItem?54:34; ring.style.width=sz+'px'; ring.style.height=sz+'px';
+      ring.style.transform=`translate(${rx-sz/2}px,${ry-sz/2}px)`;
+      ring.style.borderColor= onItem? `rgba(${this._tint},.85)` : `rgba(${this._tint},.5)`;
+      ring.style.background= onItem? `rgba(${this._tint},.07)` : 'transparent';
+      this._raf.cursor=requestAnimationFrame(loop);
+    };
+    loop();
+    this._cleanups.push(()=>{ window.removeEventListener('mousemove',move); window.removeEventListener('mouseover',over); io.disconnect(); });
+  }
+
+  /* ---------- MAGNETIC ---------- */
+  initMagnetic(){
+    if(this.isTouch()) return;
+    this.$all('[data-magnetic]').forEach(el=>{
+      const onMove=e=>{ const r=el.getBoundingClientRect(); const mx=e.clientX-(r.left+r.width/2); const my=e.clientY-(r.top+r.height/2); el.style.transition='transform .15s ease'; el.style.transform=`translate(${mx*0.28}px,${my*0.36}px)`; };
+      const onLeave=()=>{ el.style.transition='transform .45s cubic-bezier(.16,1,.3,1)'; el.style.transform='translate(0,0)'; };
+      el.addEventListener('mousemove',onMove); el.addEventListener('mouseleave',onLeave);
+      this._cleanups.push(()=>{ el.removeEventListener('mousemove',onMove); el.removeEventListener('mouseleave',onLeave); });
+    });
+  }
+
+  /* ---------- REVEALS ---------- */
+  initReveals(){
+    const els=this.$all('[data-reveal]');
+    if(!('IntersectionObserver' in window) || this.reduced()){ els.forEach(el=>{ el.style.opacity='1'; el.style.transform='none'; }); return; }
+    const io=new IntersectionObserver((entries)=>{
+      entries.forEach(en=>{ if(en.isIntersecting){ const el=en.target; const d=parseInt(el.getAttribute('data-reveal-delay')||'0',10); el.style.transitionDelay=d+'ms'; el.style.opacity='1'; el.style.transform='none';
+        if(el.hasAttribute('data-now-row')){ const bar=el.querySelector('[data-now-bar]'); if(bar) setTimeout(()=>{ bar.style.width=(bar.getAttribute('data-now-pct')||'0')+'%'; },200); }
+        io.unobserve(el); } });
+    }, { threshold:0.16, rootMargin:'0px 0px -8% 0px' });
+    els.forEach(el=>io.observe(el));
+    this._cleanups.push(()=>io.disconnect());
+  }
+
+  /* ---------- SCROLL HUB ---------- */
+  initScroll(){
+    let ticking=false;
+    const onScroll=()=>{ if(!ticking){ ticking=true; requestAnimationFrame(()=>{ this._scrollFns.forEach(fn=>{ try{fn();}catch(e){} }); ticking=false; }); } };
+    window.addEventListener('scroll',onScroll,{passive:true});
+    window.addEventListener('resize',onScroll);
+    this._scrollFns.forEach(fn=>{ try{fn();}catch(e){} });
+    this._cleanups.push(()=>{ window.removeEventListener('scroll',onScroll); window.removeEventListener('resize',onScroll); });
+  }
+
+  /* ---------- MANIFESTO scrub ---------- */
+  initManifesto(){
+    const sec=this.$('#manifiesto'); const words=this.$all('[data-mword]'); const sub=this.$('[data-mani-sub]');
+    if(!sec||!words.length) return;
+    const update=()=>{
+      const r=sec.getBoundingClientRect();
+      const total=r.height-innerHeight;
+      let p = total>0 ? (-r.top)/total : 0; p=Math.max(0,Math.min(1,p));
+      const lit=Math.round(p*(words.length+2));
+      words.forEach((w,i)=>{ if(i<lit){ w.style.color='#eef0f7'; w.style.textShadow='0 0 24px rgba(84,221,230,.25)'; } else { w.style.color='#222740'; w.style.textShadow='none'; } });
+      if(sub) sub.style.opacity = p>0.82 ? '1' : '0';
+    };
+    this._scrollFns.push(update);
+  }
+
+  /* ---------- ABOUT clip-wipe ---------- */
+  initAbout(){
+    const texts=this.$all('[data-act-text]'); const nums=this.$all('[data-act-num]');
+    if(this.reduced()){ texts.forEach(t=>{t.style.clipPath='inset(0 0 -12% 0)';t.style.opacity='1';}); nums.forEach(n=>n.style.opacity='1'); return; }
+    const io=new IntersectionObserver((es)=>{ es.forEach(en=>{ if(en.isIntersecting){ const el=en.target; el.style.clipPath='inset(0 0 -12% 0)'; el.style.opacity='1'; const num=el.parentElement.querySelector('[data-act-num]'); if(num) num.style.opacity='1'; io.unobserve(el); } }); }, {threshold:0.55});
+    texts.forEach(t=>io.observe(t));
+    this._cleanups.push(()=>io.disconnect());
+  }
+
+  /* ---------- QUESTION SCENES (slow, one at a time) ---------- */
+  initQuestionScenes(){
+    const scenes=this.$all('[data-qscene]');
+    if(!scenes.length) return;
+    scenes.forEach(scene=>{
+      const lines=Array.from(scene.querySelectorAll('[data-qline]'));
+      if(!lines.length) return;
+      if(this.reduced()){ lines.forEach((l,i)=>{ l.style.opacity = i===0?'1':'0'; l.style.filter='none'; l.style.transform='none'; }); return; }
+      const n=lines.length;
+      const update=()=>{
+        const r=scene.getBoundingClientRect();
+        const total=r.height-innerHeight;
+        let p = total>0 ? (-r.top)/total : 0; p=Math.max(0,Math.min(1,p));
+        const seg=1/n;
+        lines.forEach((l,i)=>{
+          let local=(p - i*seg)/seg; // 0..1 within this line's window
+          let vis=0;
+          if(local>=0 && local<=1){
+            // fade in 0-0.28, hold, fade out 0.72-1
+            if(local<0.28) vis=local/0.28;
+            else if(local>0.72) vis=(1-local)/0.28;
+            else vis=1;
+          }
+          vis=Math.max(0,Math.min(1,vis));
+          l.style.opacity=vis.toFixed(3);
+          l.style.transform=`translateY(${((1-vis)*26).toFixed(1)}px)`;
+          l.style.filter=`blur(${((1-vis)*7).toFixed(2)}px)`;
+        });
+      };
+      this._scrollFns.push(update);
+    });
+  }
+
+  /* ---------- TIMELINE living growth ---------- */
+  initTimeline(){
+    const tl=this.$('[data-tl]'); const grow=this.$('[data-tl-grow]'); const head=this.$('[data-tl-head]'); const items=this.$all('[data-tl-item]');
+    if(!tl||!grow) return;
+    const update=()=>{
+      const r=tl.getBoundingClientRect();
+      let p=(innerHeight*0.6 - r.top)/r.height; p=Math.max(0,Math.min(1,p));
+      const h=tl.clientHeight; const tip=h*p;
+      grow.style.height=tip+'px';
+      if(head){ head.style.top=(4+tip)+'px'; head.style.opacity=(p>0.01&&p<0.995)?'1':'0'; }
+      items.forEach(it=>{ const active = (it.offsetTop+16) <= tip; if(active){ it.style.opacity='1'; it.style.transform='translateX(0)'; const node=it.querySelector('[data-tl-node]'); if(node){ node.style.transform='scale(1)'; node.style.borderColor='rgba(84,221,230,.95)'; node.style.boxShadow='0 0 0 5px rgba(84,221,230,.12)'; } } else { it.style.opacity='.18'; it.style.transform='translateX(18px)'; const node=it.querySelector('[data-tl-node]'); if(node){ node.style.transform='scale(.32)'; node.style.borderColor='rgba(84,221,230,.35)'; node.style.boxShadow='none'; } } });
+    };
+    this._scrollFns.push(update);
+  }
+
+  /* ---------- BUILD accordion ---------- */
+  initBuild(){
+    const rows=this.$all('[data-acc-row]');
+    const open=(row)=>{ const body=row.querySelector('[data-acc-body]'); const desc=row.querySelector('[data-acc-desc]'); const title=row.querySelector('[data-acc-title]'); const plus=row.querySelector('[data-acc-plus]');
+      if(body){ body.style.maxHeight=body.scrollHeight+'px'; } if(desc) desc.style.opacity='1'; if(title){ title.style.color='#ffffff'; title.style.transform='translateX(8px)'; } if(plus){ plus.style.transform='rotate(45deg)'; plus.style.color='#54dde6'; } };
+    const close=(row)=>{ const body=row.querySelector('[data-acc-body]'); const desc=row.querySelector('[data-acc-desc]'); const title=row.querySelector('[data-acc-title]'); const plus=row.querySelector('[data-acc-plus]');
+      if(body) body.style.maxHeight='0px'; if(desc) desc.style.opacity='0'; if(title){ title.style.color='#9aa0b4'; title.style.transform='translateX(0)'; } if(plus){ plus.style.transform='rotate(0)'; plus.style.color='#3a4366'; } };
+    rows.forEach(row=>{
+      const head=row.querySelector('[data-acc-head]');
+      if(!this.isTouch()){
+        const en=()=>{ rows.forEach(r=>{ if(r!==row) close(r); }); open(row); };
+        const lv=()=>close(row);
+        row.addEventListener('mouseenter',en); row.addEventListener('mouseleave',lv);
+        this._cleanups.push(()=>{ row.removeEventListener('mouseenter',en); row.removeEventListener('mouseleave',lv); });
+      } else if(head){
+        const tap=()=>{ const isOpen=row.getAttribute('data-open')==='1'; rows.forEach(r=>{ close(r); r.setAttribute('data-open','0'); }); if(!isOpen){ open(row); row.setAttribute('data-open','1'); } };
+        head.addEventListener('click',tap);
+        this._cleanups.push(()=>head.removeEventListener('click',tap));
+      }
+    });
+  }
+
+  /* ---------- SELF-REWRITING SENTENCE ---------- */
+  initRewrite(restart){
+    const el=this.$('[data-rewrite]'); if(!el) return;
+    if(this._rwTimer){ clearTimeout(this._rwTimer); this._rwTimer=null; }
+    const words=this.T[this.state.lang].rewrite.words.slice();
+    if(this.reduced()){ el.textContent=words[0]; return; }
+    let wi=0, ci=0, deleting=false;
+    el.textContent='';
+    const tick=()=>{
+      const word=words[wi];
+      if(!deleting){
+        ci++; el.textContent=word.slice(0,ci);
+        if(ci>=word.length){ deleting=true; this._rwTimer=setTimeout(tick,1500); return; }
+        this._rwTimer=setTimeout(tick,70);
+      } else {
+        ci--; el.textContent=word.slice(0,ci);
+        if(ci<=0){ deleting=false; wi=(wi+1)%words.length; this._rwTimer=setTimeout(tick,260); return; }
+        this._rwTimer=setTimeout(tick,34);
+      }
+    };
+    // start only when visible
+    const sec=el.closest('section');
+    if(sec && 'IntersectionObserver' in window){
+      let started=false;
+      const io=new IntersectionObserver(es=>{ if(es[0].isIntersecting && !started){ started=true; tick(); io.disconnect(); } }, {threshold:0.4});
+      io.observe(sec);
+      this._cleanups.push(()=>io.disconnect());
+    } else tick();
+  }
+
+  /* ---------- PROJECT STAGE ---------- */
+  initProjectStage(){ this.applyStage(); }
+  applyStage(){
+    const root=this.el || document; if(!root) return;
+    const id=this.state.activeProjectId;
+    root.querySelectorAll('[data-proj-layer]').forEach(l=>{ const on=l.getAttribute('data-proj-layer')===id; l.style.opacity=on?'1':'0'; l.style.transform=on?'scale(1)':'scale(1.06)'; l.style.zIndex=on?'2':'1'; });
+    const proj=this.PROJECTS.find(p=>p.id===id);
+    const atmo=root.querySelector('[data-atmo]');
+    if(atmo&&proj){ atmo.style.background=`radial-gradient(70% 90% at 72% 22%, rgba(${proj.rgb},0.20), transparent 68%)`; atmo.style.animation='none'; void atmo.offsetWidth; atmo.style.animation='atmoIn 1s ease'; }
+    const panel=root.querySelector('[data-stage-panel]');
+    if(panel && !this.reduced()){ panel.style.animation='none'; void panel.offsetWidth; panel.style.animation='stageIn .7s cubic-bezier(.16,1,.3,1)'; }
+  }
+
+  /* ---------- ORBITS ---------- */
+  initOrbits(){
+    const cv=this.$('[data-orbits]'); if(!cv) return; const ctx=cv.getContext('2d'); if(!ctx) return;
+    const dpr=Math.min(devicePixelRatio||1,2);
+    const tmap={}; this.TECH.forEach(t=>tmap[t.id]=t);
+    const adj={}; this.TECH.forEach(t=>adj[t.id]=new Set());
+    this.TECH_LINKS.forEach(([a,b])=>{ if(adj[a]&&adj[b]){ adj[a].add(b); adj[b].add(a); } });
+    const GC=this.GROUP_COLOR;
+    let w=0,h=0,cx=0,cy=0,maxR=0,nodes=[],hoverId=null,lockId=null,mouse={x:-999,y:-999},visible=false,t0=performance.now();
+    const RYF=0.52;
+    const layout=()=>{
+      w=cv.clientWidth; h=cv.clientHeight; cv.width=w*dpr; cv.height=h*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+      cx=w/2; cy=h/2; maxR=Math.min(w*0.46, h*0.92);
+      nodes=[];
+      this.ORBIT_RINGS.forEach((ring,ri)=>{ const rr=ring.f*maxR; ring.ids.forEach((id,i)=>{ const t=tmap[id]; if(!t) return; const a0=(i/ring.ids.length)*Math.PI*2 + ri*0.6; nodes.push({ id, label:t.label, color:GC[t.group]||'#9aa0b4', rr, ry:rr*RYF, a0, speed:ring.speed, always:!!ring.always, x:cx, y:cy }); }); });
+    };
+    layout();
+    const onResize=()=>layout();
+    const onMove=e=>{ const r=cv.getBoundingClientRect(); mouse.x=e.clientX-r.left; mouse.y=e.clientY-r.top; };
+    const onLeave=()=>{ mouse.x=-999; mouse.y=-999; };
+    const onClick=e=>{ const r=cv.getBoundingClientRect(); const mxp=e.clientX-r.left, myp=e.clientY-r.top; let best=30,pick=null; nodes.forEach(n=>{ const d=Math.hypot(n.x-mxp,n.y-myp); if(d<best){ best=d; pick=n.id; } }); lockId = (pick&&pick===lockId)? null : pick; };
+    window.addEventListener('resize',onResize);
+    cv.addEventListener('mousemove',onMove); cv.addEventListener('mouseleave',onLeave); cv.addEventListener('click',onClick);
+    const io=new IntersectionObserver(es=>{ visible=es[0].isIntersecting; }, {threshold:0.04}); io.observe(cv);
+    const draw=()=>{
+      this._raf.orb=requestAnimationFrame(draw);
+      if(!visible) return;
+      const tt=(performance.now()-t0)/1000;
+      ctx.clearRect(0,0,w,h);
+      this.ORBIT_RINGS.forEach(ring=>{ const rr=ring.f*maxR; ctx.beginPath(); ctx.ellipse(cx,cy,rr,rr*RYF,0,0,Math.PI*2); ctx.strokeStyle='rgba(120,135,180,0.07)'; ctx.lineWidth=1; ctx.stroke(); });
+      nodes.forEach(n=>{ const a=n.a0+tt*n.speed; n.x=cx+Math.cos(a)*n.rr; n.y=cy+Math.sin(a)*n.ry; });
+      let mh=null,best=26; nodes.forEach(n=>{ const d=Math.hypot(n.x-mouse.x,n.y-mouse.y); if(d<best){ best=d; mh=n.id; } });
+      hoverId = lockId || mh;
+      const lit = id => !hoverId || id===hoverId || (adj[hoverId]&&adj[hoverId].has(id));
+      if(hoverId){
+        this.TECH_LINKS.forEach(([a,b])=>{ if(a!==hoverId && b!==hoverId) return; const na=nodes.find(n=>n.id===a), nb=nodes.find(n=>n.id===b); if(!na||!nb) return; ctx.beginPath(); ctx.moveTo(na.x,na.y); ctx.lineTo(nb.x,nb.y); ctx.strokeStyle='rgba(84,221,230,0.5)'; ctx.lineWidth=1.2; ctx.stroke(); const mp=(tt*0.7)%1; ctx.beginPath(); ctx.arc(na.x+(nb.x-na.x)*mp, na.y+(nb.y-na.y)*mp, 2.2, 0, Math.PI*2); ctx.fillStyle='#bfe6ea'; ctx.fill(); });
+      }
+      nodes.forEach(n=>{ const Lt=lit(n.id); const R=6; const al=Lt?1:(hoverId?0.18:0.9);
+        const g=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,R*4.5); g.addColorStop(0,n.color); g.addColorStop(1,'rgba(0,0,0,0)'); ctx.globalAlpha=Lt?0.5:0.14; ctx.fillStyle=g; ctx.beginPath(); ctx.arc(n.x,n.y,R*4.5,0,Math.PI*2); ctx.fill();
+        ctx.globalAlpha=al; ctx.beginPath(); ctx.arc(n.x,n.y,n.id===hoverId?R+1.5:R,0,Math.PI*2); ctx.fillStyle=n.color; ctx.fill(); ctx.lineWidth=1.2; ctx.strokeStyle='rgba(255,255,255,0.55)'; ctx.stroke();
+        const showLabel = n.always || (hoverId && Lt);
+        if(showLabel){ ctx.globalAlpha = (hoverId&&!Lt)?0.3:1; ctx.font="500 12.5px 'JetBrains Mono', monospace"; ctx.fillStyle=Lt?'#eef0f7':'#7c83a0'; ctx.textAlign='center'; ctx.fillText(n.label, n.x, n.y - R - 10); }
+        ctx.globalAlpha=1;
+      });
+    };
+    if(this.reduced()){ visible=true; draw(); cancelAnimationFrame(this._raf.orb); }
+    else draw();
+    this._cleanups.push(()=>{ window.removeEventListener('resize',onResize); cv.removeEventListener('mousemove',onMove); cv.removeEventListener('mouseleave',onLeave); cv.removeEventListener('click',onClick); io.disconnect(); });
+  }
+
+  /* ---------- GITHUB living wave graph ---------- */
+  initGithubCanvas(){
+    const cv=this.$('[data-gh-canvas]'); if(!cv) return; const ctx=cv.getContext('2d'); if(!ctx) return;
+    const dpr=Math.min(devicePixelRatio||1,2); const rows=7;
+    let w=0,h=0,cols=0,gap=4,cell=0,base=[],visible=false,t0=performance.now();
+    const layout=()=>{ w=cv.clientWidth; h=cv.clientHeight; cv.width=w*dpr; cv.height=h*dpr; ctx.setTransform(dpr,0,0,dpr,0,0); cell=(h-gap*(rows-1))/rows; cols=Math.max(10,Math.floor((w+gap)/(cell+gap)));
+      base=[]; for(let c=0;c<cols;c++){ base[c]=[]; for(let r=0;r<rows;r++){ const v=Math.random(); base[c][r]= v<0.42?0 : v<0.68?0.2 : v<0.85?0.45 : v<0.95?0.7:1; } } };
+    layout();
+    const onResize=()=>layout();
+    window.addEventListener('resize',onResize);
+    const io=new IntersectionObserver(es=>{ visible=es[0].isIntersecting; }, {threshold:0.04}); io.observe(cv);
+    const draw=()=>{ this._raf.gh=requestAnimationFrame(draw); if(!visible) return; const tt=(performance.now()-t0)/1000; ctx.clearRect(0,0,w,h);
+      for(let c=0;c<cols;c++){ const wave=Math.sin(tt*1.1 - c*0.28); const boost=Math.max(0,wave)*0.55; for(let r=0;r<rows;r++){ let a=base[c][r]*0.7 + boost*(base[c][r]>0?1:0.25); a=Math.max(0.05,Math.min(1,a)); const x=c*(cell+gap), y=r*(cell+gap); ctx.fillStyle='rgba(84,221,230,'+a+')'; const rad=Math.min(3,cell*0.25); ctx.beginPath(); if(ctx.roundRect){ ctx.roundRect(x,y,cell,cell,rad); } else { ctx.rect(x,y,cell,cell); } ctx.fill(); } } };
+    if(this.reduced()){ visible=true; draw(); cancelAnimationFrame(this._raf.gh); } else draw();
+    this._cleanups.push(()=>{ window.removeEventListener('resize',onResize); io.disconnect(); });
+  }
+
+  /* ---------- GITHUB terminal git-log ---------- */
+  fillGitlog(){
+    const wrap=this.$('[data-gitlog]'); if(!wrap) return;
+    this._glTimers.forEach(id=>clearTimeout(id)); this._glTimers=[];
+    wrap.innerHTML='';
+    const repos=this.T[this.state.lang].repos;
+    const rowEls=[];
+    repos.forEach((r)=>{
+      const row=document.createElement('a');
+      row.href='https://github.com/jegomez23'; row.target='_blank'; row.rel='noopener';
+      row.style.cssText='display:flex;align-items:center;gap:14px;padding:15px 6px;border-bottom:1px solid rgba(176,196,206,.08);text-decoration:none;color:#9aa0b4;opacity:0;transform:translateX(-12px);transition:opacity .5s ease,transform .5s cubic-bezier(.16,1,.3,1),background .3s ease,color .3s ease;cursor:none';
+      row.addEventListener('mouseenter',()=>{ row.style.background='rgba(84,221,230,.05)'; row.style.color='#eef0f7'; row.style.transform='translateX(6px)'; });
+      row.addEventListener('mouseleave',()=>{ row.style.background='transparent'; row.style.color='#9aa0b4'; row.style.transform='translateX(0)'; });
+      row.innerHTML =
+        '<span style="color:#54dde6;flex-shrink:0">›</span>'+
+        '<span style="color:#d6eef0;font-weight:500;flex-shrink:0">'+r.name+'</span>'+
+        '<span style="display:inline-flex;align-items:center;gap:6px;flex-shrink:0;font-size:.85em;color:#7c83a0"><span style="width:9px;height:9px;border-radius:50%;background:'+r.color+'"></span>'+r.lang+'</span>'+
+        '<span data-typed style="flex:1;min-width:0;color:#7c83a0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></span>'+
+        '<span style="flex-shrink:0;color:#3a4366">↗</span>';
+      wrap.appendChild(row); rowEls.push({row, desc:r.desc});
+    });
+    if(this.reduced()){ rowEls.forEach(o=>{ o.row.style.opacity='1'; o.row.style.transform='none'; o.row.querySelector('[data-typed]').textContent=o.desc; }); return; }
+    let started=false;
+    const run=()=>{ if(started) return; started=true;
+      rowEls.forEach((o,i)=>{ const t1=setTimeout(()=>{ o.row.style.opacity='1'; o.row.style.transform='translateX(0)'; const span=o.row.querySelector('[data-typed]'); const txt=o.desc; let k=0; const type=()=>{ span.textContent=txt.slice(0,k); k++; if(k<=txt.length){ const t2=setTimeout(type,16); this._glTimers.push(t2); } }; type(); }, i*240); this._glTimers.push(t1); });
+    };
+    const io=new IntersectionObserver(es=>{ if(es[0].isIntersecting){ run(); io.disconnect(); } }, {threshold:0.15}); io.observe(wrap);
+    this._cleanups.push(()=>io.disconnect());
+  }
+
+  /* ---------- BACKGROUND FIELD ---------- */
+  initBackground(){
+    const cv=this.$('[data-bg]'); if(!cv) return; const ctx=cv.getContext('2d'); if(!ctx) return;
+    const dpr=Math.min(devicePixelRatio||1,2);
+    let w=0,h=0,layers=[],motes=[],mouse={x:-999,y:-999},mvx=0,mvy=0,scrollY=window.scrollY||0;
+    // three parallax depth layers: far (faint, tiny, slow) → near (brighter, larger, networked)
+    const DEPTHS=[
+      { n:0.00018, sp:0.020, r:[0.3,0.9],  a:0.20, par:0.010, link:0,   col:'150,170,180' },
+      { n:0.00012, sp:0.045, r:[0.5,1.3],  a:0.34, par:0.028, link:0,   col:'176,196,206' },
+      { n:0.00009, sp:0.075, r:[0.7,1.8],  a:0.52, par:0.060, link:118, col:'186,210,216' },
+    ];
+    const build=()=>{ layers=DEPTHS.map(d=>{ const count=Math.min(70,Math.floor(w*h*d.n)); const arr=[]; for(let i=0;i<count;i++){ const ang=Math.random()*Math.PI*2; arr.push({ x:Math.random()*w, y:Math.random()*h, vx:Math.cos(ang)*d.sp, vy:Math.sin(ang)*d.sp, r:d.r[0]+Math.random()*(d.r[1]-d.r[0]), tw:Math.random()*Math.PI*2 }); } return { d, arr }; });
+      // a few slow "research probes" that drift and leave faint trails (drawn as moving cross-hairs)
+      motes=[]; const m=Math.max(2,Math.min(4,Math.floor(w/620))); for(let i=0;i<m;i++){ motes.push({ x:Math.random()*w, y:Math.random()*h, ang:Math.random()*Math.PI*2, sp:0.10+Math.random()*0.06, ph:Math.random()*Math.PI*2 }); } };
+    const resize=()=>{ w=cv.clientWidth; h=cv.clientHeight; cv.width=w*dpr; cv.height=h*dpr; ctx.setTransform(dpr,0,0,dpr,0,0); build(); };
+    resize();
+    const onResize=()=>resize();
+    const onMove=e=>{ mvx=e.clientX-mouse.x; mvy=e.clientY-mouse.y; mouse.x=e.clientX; mouse.y=e.clientY; };
+    const onScroll=()=>{ scrollY=window.scrollY||0; };
+    window.addEventListener('resize',onResize); window.addEventListener('mousemove',onMove); window.addEventListener('scroll',onScroll,{passive:true});
+    let t=0;
+    const near=layers; // ref
+    const draw=()=>{ this._raf.bg=requestAnimationFrame(draw);
+      const damp = this._freeze ? 0.04 : 1; t+=0.006*damp;
+      ctx.clearRect(0,0,w,h);
+      // breathing depth wash — two faint slow-drifting fields (nebula of an instrument lens)
+      const cx1=w*(0.30+Math.sin(t*0.5)*0.05), cy1=h*(0.32+Math.cos(t*0.4)*0.05);
+      let g=ctx.createRadialGradient(cx1,cy1,0,cx1,cy1,Math.max(w,h)*0.55); g.addColorStop(0,'rgba(40,72,80,0.16)'); g.addColorStop(1,'rgba(10,13,17,0)'); ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+      const cx2=w*(0.74+Math.cos(t*0.35)*0.05), cy2=h*(0.7+Math.sin(t*0.45)*0.05);
+      g=ctx.createRadialGradient(cx2,cy2,0,cx2,cy2,Math.max(w,h)*0.5); g.addColorStop(0,'rgba(34,48,54,0.10)'); g.addColorStop(1,'rgba(10,13,17,0)'); ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+      // mouse instrument glow
+      if(mouse.x>0 && !this._freeze){ g=ctx.createRadialGradient(mouse.x,mouse.y,0,mouse.x,mouse.y,300); g.addColorStop(0,'rgba(84,221,230,0.07)'); g.addColorStop(0.5,'rgba(84,221,230,0.025)'); g.addColorStop(1,'rgba(84,221,230,0)'); ctx.fillStyle=g; ctx.fillRect(0,0,w,h); }
+      // depth layers (far→near), each offset by scroll parallax
+      for(let li=0; li<near.length; li++){ const L=near[li]; const off=(scrollY*L.d.par)%(h+40);
+        for(let i=0;i<L.arr.length;i++){ const p=L.arr[i]; p.x+=p.vx*damp; p.y+=p.vy*damp; p.tw+=0.02;
+          if(p.x<-4)p.x=w+4; else if(p.x>w+4)p.x=-4; if(p.y<-4)p.y=h+4; else if(p.y>h+4)p.y=-4;
+          const dy=((p.y-off)%(h+40)+(h+40))%(h+40)-20;
+          const tw=0.7+Math.sin(p.tw)*0.3;
+          ctx.beginPath(); ctx.arc(p.x,dy,p.r,0,Math.PI*2); ctx.fillStyle='rgba('+L.d.col+','+(L.d.a*tw).toFixed(3)+')'; ctx.fill();
+        }
+        if(L.d.link){ const A=L.arr, off2=off; for(let i=0;i<A.length;i++){ for(let j=i+1;j<A.length;j++){ const a=A[i],b=A[j]; const ax=a.x, ay=((a.y-off2)%(h+40)+(h+40))%(h+40)-20, bx=b.x, by=((b.y-off2)%(h+40)+(h+40))%(h+40)-20; const d=Math.hypot(ax-bx,ay-by); if(d<L.d.link){ ctx.beginPath(); ctx.moveTo(ax,ay); ctx.lineTo(bx,by); ctx.strokeStyle='rgba(84,221,230,'+(0.085*(1-d/L.d.link)).toFixed(3)+')'; ctx.lineWidth=0.55; ctx.stroke(); } } } }
+      }
+      // research probes — slow wandering cross-hairs that scan the field
+      if(!this._freeze){ motes.forEach(m=>{ m.ang+=Math.sin(t*0.6+m.ph)*0.004; m.x+=Math.cos(m.ang)*m.sp; m.y+=Math.sin(m.ang)*m.sp; if(m.x<0)m.x=w; if(m.x>w)m.x=0; if(m.y<0)m.y=h; if(m.y>h)m.y=0;
+        const pulse=0.5+Math.sin(t*1.4+m.ph)*0.5; const rad=9+pulse*3;
+        ctx.strokeStyle='rgba(84,221,230,'+(0.16+pulse*0.12).toFixed(3)+')'; ctx.lineWidth=0.7;
+        ctx.beginPath(); ctx.moveTo(m.x-rad,m.y); ctx.lineTo(m.x-3,m.y); ctx.moveTo(m.x+3,m.y); ctx.lineTo(m.x+rad,m.y); ctx.moveTo(m.x,m.y-rad); ctx.lineTo(m.x,m.y-3); ctx.moveTo(m.x,m.y+3); ctx.lineTo(m.x,m.y+rad); ctx.stroke();
+        ctx.beginPath(); ctx.arc(m.x,m.y,1.4,0,Math.PI*2); ctx.fillStyle='rgba(186,210,216,0.6)'; ctx.fill();
+      }); }
+    };
+    if(!this.reduced()) draw(); else { /* one static frame */ }
+    this._cleanups.push(()=>{ window.removeEventListener('resize',onResize); window.removeEventListener('mousemove',onMove); window.removeEventListener('scroll',onScroll); });
+  }
+
+  /* ---------- AXORA particles ---------- */
+  initAxora(){
+    const cv=this.$('[data-axora]'); if(!cv) return; const ctx=cv.getContext('2d'); if(!ctx) return;
+    const dpr=Math.min(devicePixelRatio||1,2); let w=0,h=0,parts=[],visible=false;
+    const resize=()=>{ w=cv.clientWidth; h=cv.clientHeight; cv.width=w*dpr; cv.height=h*dpr; ctx.setTransform(dpr,0,0,dpr,0,0); const n=Math.min(56,Math.floor(w*h/24000)); parts=[]; for(let i=0;i<n;i++){ parts.push({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*0.24,vy:(Math.random()-.5)*0.24,r:Math.random()*1.7+0.5,c:Math.random()>0.5?'84,221,230':'84,221,230'}); } };
+    resize();
+    const onResize=()=>resize(); window.addEventListener('resize',onResize);
+    const io=new IntersectionObserver(es=>{ visible=es[0].isIntersecting; }, {threshold:0.02}); io.observe(cv);
+    const draw=()=>{ this._raf.ax=requestAnimationFrame(draw); if(!visible) return; ctx.clearRect(0,0,w,h);
+      parts.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; if(p.x<0||p.x>w)p.vx*=-1; if(p.y<0||p.y>h)p.vy*=-1; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle='rgba('+p.c+',0.7)'; ctx.fill(); });
+      for(let i=0;i<parts.length;i++){ for(let j=i+1;j<parts.length;j++){ const a=parts[i],b=parts[j]; const d=Math.hypot(a.x-b.x,a.y-b.y); if(d<140){ ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.strokeStyle='rgba(84,221,230,'+(0.13*(1-d/140))+')'; ctx.lineWidth=0.6; ctx.stroke(); } } } };
+    if(!this.reduced()) draw();
+    this._cleanups.push(()=>{ window.removeEventListener('resize',onResize); io.disconnect(); });
+  }
+
+  /* ---------- AXORA ARRIVAL ---------- */
+  initAxoraArrival(){
+    const sec=this.$('#axora'); if(!sec) return;
+    if(this.reduced()) return;
+    const wash=document.createElement('div');
+    wash.style.cssText='position:fixed;inset:0;z-index:60;pointer-events:none;opacity:0;background:radial-gradient(60% 60% at 50% 46%, rgba(84,221,230,.42), rgba(84,221,230,.16) 45%, rgba(8,15,25,0) 72%);transition:opacity 1.1s ease;mix-blend-mode:screen';
+    (this.el||document.body).appendChild(wash);
+    let fired=false;
+    const io=new IntersectionObserver((es)=>{ es.forEach(en=>{ if(en.isIntersecting && !fired){ fired=true;
+      const title=sec.querySelector('h2');
+      requestAnimationFrame(()=>{ wash.style.opacity='1'; });
+      const t1=setTimeout(()=>{ wash.style.opacity='0'; }, 700); this._glTimers.push(t1);
+      if(title){ const seq=[[0,'.25'],[90,'1'],[170,'.4'],[250,'1'],[360,'.7'],[460,'1']]; seq.forEach(([ms,op])=>{ const id=setTimeout(()=>{ title.style.opacity=op; },ms); this._glTimers.push(id); }); }
+      io.disconnect();
+    } }); }, {threshold:0.45});
+    io.observe(sec);
+    this._cleanups.push(()=>{ io.disconnect(); if(wash.parentNode) wash.parentNode.removeChild(wash); });
+  }
+
+  /* ---------- CALM ENDING ---------- */
+  initCalmEnding(){
+    const sec=this.$('#contacto'); const bg=this.$('[data-bg-wrap]'); const noise=this.$('[data-noise]'); const fin=this.$('[data-final-reveal]');
+    if(!sec||!bg) return;
+    let revealed=false;
+    const update=()=>{
+      const r=sec.getBoundingClientRect();
+      let p = 1-(r.top/innerHeight); p=Math.max(0,Math.min(1,p));
+      bg.style.opacity=(1-p*0.85).toFixed(3);
+      if(noise) noise.style.opacity=(0.045*(1-p*0.7)).toFixed(4);
+      this._freeze = p>0.55;
+      // delayed contact reveal: thought fully in view, then wait
+      if(!revealed && p>0.34){
+        revealed=true;
+        const id=setTimeout(()=>{ if(fin){ fin.style.opacity='1'; fin.style.transform='translateY(0)'; } }, 2600);
+        this._glTimers.push(id);
+      }
+    };
+    this._scrollFns.push(update);
+  }
+
+  /* ---------- EASTER EGG ---------- */
+  initEasterEgg(){
+    const egg=this.$('[data-egg]'); if(!egg) return;
+    if(this.reduced()) return;
+    this._eggTimer=setTimeout(()=>{
+      egg.style.opacity='1'; egg.style.transform='translateY(0)';
+      const hide=setTimeout(()=>{ egg.style.opacity='0'; egg.style.transform='translateY(10px)'; }, 9000);
+      this._glTimers.push(hide);
+    }, 95000);
+  }
+}
+</script>
+<script>
+(async () => {
+  if (!document.title || !document.title.trim()) document.title = "Juan Esteban - Experience";
+  // Prepend so page-supplied @page / break rules (deck-stage's margin:0,
+  // author CSS) keep source-order precedence over the baseline.
+  const baseCss = document.createElement('style');
+  baseCss.textContent = "@media print {\n  figure, table { break-inside: avoid; }\n  *, *::before, *::after {\n    print-color-adjust: exact; -webkit-print-color-adjust: exact;\n    backdrop-filter: none !important; -webkit-backdrop-filter: none !important;\n    animation-delay: -99s !important; animation-duration: .001s !important;\n    animation-iteration-count: 1 !important; animation-fill-mode: both !important;\n    animation-play-state: running !important; transition-duration: 0s !important;\n  }\n}";
+  document.head.prepend(baseCss);
+  if (document.readyState === 'loading') {
+    await new Promise((r) => document.addEventListener('DOMContentLoaded', r, { once: true }));
+  }
+  let ds = document.querySelector('deck-stage');
+  // whenDefined never resolves when nothing registers the element, so only
+  // await it when a <deck-stage> tag exists (and race a timeout regardless).
+  if (ds && !customElements.get('deck-stage')) {
+    try {
+      await Promise.race([
+        customElements.whenDefined('deck-stage'),
+        new Promise((r) => setTimeout(r, 3000)),
+      ]);
+    } catch (e) {}
+    ds = document.querySelector('deck-stage');
+  }
+  // dc-runtime assigns window.DCLogic at init and mounts into #dc-root on
+  // DOMContentLoaded; settle on that subtree so React has rendered before
+  // print(). Non-DC pages fall through to weighing body.
+  const isDc = !ds && 'DCLogic' in window;
+  const settleRoot = ds || (isDc ? document.getElementById('dc-root') : null) || document.body;
+  if (settleRoot) {
+    // Weigh only content children — skip script/style/template so inline
+    // Babel/CSS doesn't register as stable "content" before the framework
+    // has mounted anything.
+    const MEDIA = 'img,svg,canvas,video,picture,iframe,embed,object';
+    const weigh = () => {
+      let text = 0, media = 0;
+      for (const c of settleRoot.children) {
+        const t = c.tagName;
+        if (t === 'SCRIPT' || t === 'STYLE' || t === 'TEMPLATE') continue;
+        text += (c.textContent || '').trim().length;
+        media += c.querySelectorAll(MEDIA).length + (c.matches(MEDIA) ? 1 : 0);
+      }
+      return text + media * 100;
+    };
+    // "Non-zero and stable" alone is not sufficient to mean rendered: generic
+    // body can carry a static shell while async main content is pending, and
+    // #dc-root can carry the root DC's static text while child refs are still
+    // .sc-placeholder boxes. Gate generic on readyState 'complete', and never
+    // accept stability while a dc-runtime placeholder is present.
+    const isGeneric = settleRoot === document.body;
+    const deadline = Date.now() + 15000;
+    let last = -1, stable = 0;
+    while (Date.now() < deadline) {
+      const n = weigh();
+      const ready =
+        (!isGeneric || document.readyState === 'complete') &&
+        !settleRoot.querySelector('.sc-placeholder');
+      if (n > 0 && n === last && ready) { if (++stable >= 2) break; } else { stable = 0; }
+      last = n;
+      await new Promise((r) => setTimeout(r, 250));
+    }
+  }
+  // Project support.js may predate runtime default-seeding; push via bridge.
+  if (isDc && window.__dcSetProps && window.__dcRootName) {
+    try {
+      const dpEl = document.querySelector('script[data-dc-script]');
+      const meta = JSON.parse((dpEl && dpEl.getAttribute('data-props')) || '{}');
+      const bag = {};
+      for (const k in meta)
+        if (k[0] !== '$' && meta[k] && meta[k].default !== undefined)
+          bag[k] = meta[k].default;
+      if (Object.keys(bag).length) {
+        window.__dcSetProps(window.__dcRootName(), bag);
+        await new Promise((r) => setTimeout(r, 50));
+      }
+    } catch (e) {}
+  }
+  // Reveal content gated on scroll or visibility before printing. Lazy <img>,
+  // IntersectionObserver fade-ins, and collapsed <details> don't render while
+  // off-screen, so a long page would print with them blank or closed. Open
+  // every <details>, force native-lazy images eager, and scroll the document
+  // through its full height to trip lazy-load + IO; then wait (bounded) for the
+  // newly-triggered images. Inert for deck-stage (slides aren't scroll-gated).
+  try {
+    for (const d of document.querySelectorAll('details')) d.open = true;
+    for (const img of document.querySelectorAll('img[loading="lazy"]'))
+      img.loading = 'eager';
+    const scroller = document.scrollingElement || document.documentElement;
+    const full = Math.max(scroller.scrollHeight, document.body.scrollHeight);
+    const step = window.innerHeight || 800;
+    for (let y = 0; y <= full; y += step) {
+      window.scrollTo(0, y);
+      await new Promise((r) => requestAnimationFrame(r));
+    }
+    window.scrollTo(0, 0);
+    await Promise.race([
+      Promise.all(
+        [...document.images].map((img) =>
+          img.complete
+            ? null
+            : new Promise((res) => {
+                img.addEventListener('load', res, { once: true });
+                img.addEventListener('error', res, { once: true });
+              })
+        )
+      ),
+      new Promise((r) => setTimeout(r, 4000)),
+    ]);
+  } catch (e) {}
+  try { await document.fonts.ready; } catch (e) {}
+  // Jump every animation to its end state so print() never captures a slide
+  // mid-entrance. Ordering matters: the 0s-transition style must be live
+  // BEFORE data-deck-active is set so attribute-keyed transitions don't
+  // start a (now-0s) run from the pre-active base.
+  const st = document.createElement('style');
+  st.textContent = '*,*::before,*::after{animation-delay:-99s !important;animation-duration:.001s !important;animation-iteration-count:1 !important;animation-fill-mode:both !important;animation-play-state:running !important;transition-duration:0s !important}';
+  document.head.appendChild(st);
+  for (const d of document.querySelectorAll('deck-stage')) {
+    for (const c of d.children) {
+      const t = c.tagName;
+      if (t === 'SCRIPT' || t === 'STYLE' || t === 'TEMPLATE') continue;
+      c.setAttribute('data-deck-active', '');
+    }
+  }
+  // Re-append deck-stage's @page last so no author @page can add a margin and
+  // spill each full-bleed slide onto two sheets. Backstop for old copies.
+  if (ds) {
+    let pg = document.getElementById('deck-stage-print-page');
+    if (!pg) {
+      pg = document.createElement('style');
+      pg.textContent = '@page{size:' + (+ds.getAttribute('width') || 1920) +
+        'px ' + (+ds.getAttribute('height') || 1080) + 'px;margin:0}';
+    }
+    document.body.appendChild(pg);
+  }
+  try {
+    const sweep = () => {
+      for (const a of document.getAnimations()) {
+        try { a.finish(); } catch (e) {
+          try { a.currentTime = (a.effect && a.effect.getComputedTiming().duration) || 0; a.pause(); } catch (e2) {}
+        }
+      }
+    };
+    sweep();
+    await new Promise((r) => requestAnimationFrame(r));
+    sweep();
+    await new Promise((r) => requestAnimationFrame(r));
+  } catch (e) {}
+  // Size the PDF page to the rendered design unless the file opted into
+  // standard paper via @page{size:letter|A4|…}. Decks own their own @page.
+  // Wrappers (body, …) lose padding+margin so the frame sits at (0,0); the
+  // frame itself loses only margin — its padding is INSIDE the measured
+  // rect and must stay, or content shifts and leaves a gap at bottom/right.
+  var __m = null;
+  try { __m = (() => {
+  var STAMP = true;
+  var docEl = document.documentElement;
+  var doc = { width: docEl.scrollWidth, height: docEl.scrollHeight };
+
+  var ds = document.querySelector('deck-stage');
+  if (ds) {
+    var dw = Number(ds.getAttribute('width')) || 1920;
+    var dh = Number(ds.getAttribute('height')) || 1080;
+    var n = typeof ds.length === 'number' ? ds.length : ds.children.length;
+    var idx = typeof ds.index === 'number' ? ds.index : 0;
+    var frames = [];
+    for (var i = 0; i < n; i++) frames.push({ left: 0, top: 0, width: dw, height: dh });
+    return { kind: 'deck', source: 'declared', doc: doc, frames: frames,
+      authored: frames.map(function(){return{width:true,height:true}}),
+      deck: { width: dw, height: dh, slideCount: n, index: idx },
+      signals: { paperPage: false, pxPage: false } };
+  }
+
+  // Declared kind: a doc-page tag names the kind outright, so no signal
+  // heuristics run (like the deck branch above, signals report false —
+  // they describe inferred classifications only). The tag alone is not
+  // trusted: the element must have upgraded (shadowRoot present), so a
+  // leftover tag whose script was deleted falls through to the heuristics
+  // that handle plain markup.
+  var stageSx = window.scrollX || 0, stageSy = window.scrollY || 0;
+  var dp = document.querySelector('doc-page');
+  if (dp && dp.shadowRoot) {
+    // Crop to the sheet, not the host — the desk around it is screen-only
+    // chrome that must not land in PNG exports.
+    var sheet = dp.shadowRoot.querySelector('.sheet');
+    var sr = (sheet || dp).getBoundingClientRect();
+    return { kind: 'paper-doc', source: 'declared', doc: doc,
+      frames: [{ left: sr.left + stageSx, top: sr.top + stageSy,
+        width: sr.width, height: sr.height }],
+      authored: [{ width: false, height: false }],
+      signals: { paperPage: false, pxPage: false } };
+  }
+  var paperPage = false, pxPage = false;
+  var eachRule = function (fn) {
+    for (var s = 0; s < document.styleSheets.length; s++) {
+      var rs; try { rs = document.styleSheets[s].cssRules; } catch (e) { continue; }
+      for (var r = 0; r < rs.length; r++) {
+        fn(rs[r]);
+        if (rs[r].cssRules) for (var n = 0; n < rs[r].cssRules.length; n++) fn(rs[r].cssRules[n]);
+      }
+    }
+  };
+  eachRule(function (r) {
+    if (r.type !== 6) return;
+    var m = /\bsize\s*:\s*([^;}]+)/i.exec(r.cssText || '');
+    if (!m) return;
+    if (/\b(letter|a[3-5]|legal|ledger)\b/i.test(m[1])) paperPage = true;
+    if (/\d+(?:\.\d+)?px\b/i.test(m[1])) pxPage = true;
+  });
+  var signals = { paperPage: paperPage, pxPage: pxPage };
+
+  var pxVal = function (v) {
+    var m = /^(\d+(?:\.\d+)?)px$/.exec(v || ''); return m ? +m[1] : 0;
+  };
+  var authoredPx = function (el, prop) {
+    if (pxVal(el.style[prop])) return true;
+    var attr = el.getAttribute(prop);
+    if (attr && /^\d+$/.test(attr)) return true;
+    var hit = false;
+    eachRule(function (r) {
+      if (hit || r.type !== 1 || !r.style) return;
+      try { if (el.matches(r.selectorText) && pxVal(r.style[prop])) hit = true; } catch (e) {}
+    });
+    return hit;
+  };
+
+  var el = document.body, rootPxW = false;
+  for (;;) {
+    var kids = [];
+    for (var c = 0; c < el.children.length; c++) {
+      var t = el.children[c].tagName;
+      if (t !== 'SCRIPT' && t !== 'STYLE' && t !== 'TEMPLATE') kids.push(el.children[c]);
+    }
+    if (kids.length !== 1 || !(kids[0] instanceof HTMLElement)) break;
+    if (STAMP) el.setAttribute('data-om-frame-wrap', '');
+    el = kids[0];
+    rootPxW = authoredPx(el, 'width');
+    if (rootPxW) break;
+  }
+  if (!rootPxW) rootPxW = authoredPx(el, 'width');
+
+  // @page{size:letter} alone is a flowing doc; with a px-width root it's a
+  // fixed sheet pretending to be paper — fall through and size to render.
+  if (paperPage && !rootPxW) {
+    return { kind: 'paper-doc', source: 'inferred', doc: doc, signals: signals,
+      frames: [{ left: 0, top: 0, width: doc.width, height: doc.height }],
+      authored: [{ width: false, height: false }] };
+  }
+
+  var sx = window.scrollX || 0, sy = window.scrollY || 0;
+  var rectOf = function (e) {
+    var r = e.getBoundingClientRect();
+    var oy; try { oy = getComputedStyle(e).overflowY; } catch (err) {}
+    var h = oy === 'visible' ? Math.max(r.height, e.scrollHeight || 0) : r.height;
+    return { left: r.left + sx, top: r.top + sy, width: r.width, height: h };
+  };
+
+  // Multi-frame: ≥2 visible non-fixed children, each with authored px width
+  // AND height, all within ±2px of each other. Off unless the page opts in
+  // via data-om-multi-frame on the stop element — guards against card grids
+  // and pricing tables that match the geometry but aren't separate canvases.
+  if (el.hasAttribute('data-om-multi-frame')) {
+    var cands = [];
+    for (var k = 0; k < el.children.length; k++) {
+      var ch = el.children[k];
+      var cs; try { cs = getComputedStyle(ch); } catch (e) { continue; }
+      if (cs.display === 'none' || cs.visibility === 'hidden' || cs.position === 'fixed') continue;
+      var rc = rectOf(ch);
+      if (rc.width < 2 || rc.height < 2) continue;
+      if (!authoredPx(ch, 'width') || !authoredPx(ch, 'height')) continue;
+      cands.push(rc);
+    }
+    if (cands.length >= 2) {
+      var w0 = cands[0].width, h0 = cands[0].height, ok = true;
+      for (var q = 1; q < cands.length; q++)
+        if (Math.abs(cands[q].width - w0) > 2 || Math.abs(cands[q].height - h0) > 2) ok = false;
+      if (ok) return { kind: 'multi-frame', source: 'inferred', doc: doc, signals: signals,
+        frames: cands, authored: cands.map(function(){return{width:true,height:true}}) };
+    }
+  }
+
+  if (STAMP) el.setAttribute('data-om-frame', '');
+  return { kind: 'single-canvas', source: 'inferred', doc: doc, signals: signals,
+    frames: [rectOf(el)],
+    authored: [{ width: rootPxW, height: authoredPx(el, 'height') }] };
+})(); } catch (e) {}
+  var frame = null;
+  if (__m && __m.kind === 'single-canvas') {
+    var f = __m.frames && __m.frames[0];
+    if (f && f.width >= 200 && f.height >= 200) {
+      frame = f;
+      var fst = document.createElement('style');
+      fst.textContent = '@media print{@page{size:' + Math.ceil(f.width) + 'px ' +
+        Math.ceil(f.height) + 'px;margin:0}' +
+        'html,body,[data-om-frame-wrap]{padding:0!important;margin:0!important;background:none!important}' +
+        '[data-om-frame]{margin:0!important}}';
+      document.body.appendChild(fst);
+    }
+  }
+  // Relax break-inside on oversized elements. An element taller than a
+  // printable page can't honor break-inside: avoid — browsers either overflow
+  // it or push it whole to the next page, leaving a blank gap, then break it
+  // anyway at an arbitrary point. After the final layout (content revealed,
+  // animations jumped), find elements taller than a page that still compute
+  // break-inside: avoid and reset them to auto, so the browser breaks them at
+  // their children's boundaries instead (children keep their own avoid). PAGE_PX
+  // is a conservative portrait estimate at 96 CSS px/in — Letter/A4 usable
+  // height minus our 0.5in margins — so only clearly-oversized elements are
+  // touched and under-page elements still stay whole. Skipped for decks (slides
+  // are sized to the page) and for fixed-size canvases (frame set, or an author
+  // px-based @page) — runs as before for flowing docs on letter/A4.
+  try {
+    if (!ds && !frame && !(__m && __m.signals && __m.signals.pxPage)) {
+      const PAGE_PX = 1024;
+      // Our print defaults add a real @page margin only when the source has
+      // no @page of its own; computed style can't tell us (it reports screen
+      // media), so read the injected rule directly.
+      const defaults = document.querySelector('style[data-omelette-print-defaults]');
+      const pageInset = /@page\s*\{[^}]*margin/.test(defaults ? defaults.textContent || '' : '');
+      const SEL = 'section,article,figure,table,pre,blockquote,[class~="card" i],[class~="page" i],[class~="sheet" i]';
+      for (const el of document.body.querySelectorAll(SEL)) {
+        if (el instanceof HTMLElement && el.offsetHeight > PAGE_PX) {
+          el.setAttribute('data-om-oversized', '');
+          // Fake-paged docs simulate sheets with over-tall break-after:page
+          // boxes; honoring the break spills half-blank pages and ends a
+          // colored box mid-sheet. Flow them, and (only when we own the page
+          // inset) drop the redundant padding/background via the rule below.
+          const cs = getComputedStyle(el);
+          if (cs.breakAfter === 'page' || cs.pageBreakAfter === 'always') {
+            el.setAttribute('data-om-fakepage', '');
+          }
+        }
+      }
+      const ost = document.createElement('style');
+      ost.textContent = '@media print{' +
+        '[data-om-oversized]{break-inside:auto !important;page-break-inside:auto !important}' +
+        '[data-om-fakepage]{break-after:auto !important;page-break-after:auto !important}' +
+        (pageInset ? '[data-om-fakepage]{padding:0 !important;background:none !important}' : '') +
+        '}';
+      document.head.appendChild(ost);
+    }
+  } catch (e) {}
+  // macOS Preview renders Skia-PDF Luminosity soft-masks as opaque grey boxes;
+  // swap the CSS that triggers them for Preview-safe forms.
+  try {
+    for (const el of document.body.querySelectorAll('*')) {
+      const cs = getComputedStyle(el);
+
+      if (cs.boxShadow !== 'none' && cs.filter === 'none') {
+        const outs = [], kept = [];
+        for (const s of cs.boxShadow.split(/,(?![^(]*[)])/)) {
+          const t = s.trim();
+          const m = t.match(/^(rgba?[(][^)]+[)]) (-?[0-9.]+px) (-?[0-9.]+px) ([0-9.]+px) -?[0-9.]+px$/);
+          if (m && parseFloat(m[4]) > 0) outs.push('drop-shadow(' + m[2] + ' ' + m[3] + ' ' + m[4] + ' ' + m[1] + ')');
+          else kept.push(t);
+        }
+        if (outs.length) {
+          el.style.setProperty('filter', outs.join(' '), 'important');
+          el.style.setProperty('box-shadow', kept.join(', ') || 'none', 'important');
+        }
+      }
+
+      const mask = cs.maskImage && cs.maskImage !== 'none' ? cs.maskImage : cs.webkitMaskImage;
+      if (mask && mask !== 'none' && cs.filter === 'none') el.style.setProperty('filter', 'opacity(1)', 'important');
+    }
+  } catch (e) {}
+  setTimeout(() => { try { window.print(); } catch (e) {} }, 200);
+})();
+</script>
+</body>
+</html>
