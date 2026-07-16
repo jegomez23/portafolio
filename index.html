@@ -299,10 +299,6 @@
                 </div>
               </sc-for>
             </div>
-            <div style="border:1px solid rgba(176,196,206,.08);border-radius:12px;background:rgba(0,0,0,.32);padding:13px 15px;margin-bottom:22px;overflow-x:auto;-webkit-overflow-scrolling:touch">
-              <div style="display:flex;gap:6px;margin-bottom:10px"><span style="width:9px;height:9px;border-radius:50%;background:#ff5f57"></span><span style="width:9px;height:9px;border-radius:50%;background:#febc2e"></span><span style="width:9px;height:9px;border-radius:50%;background:#28c840"></span></div>
-              <pre style="margin:0;font-family:'JetBrains Mono',monospace;font-size:clamp(11px,1.4vw,12px);line-height:1.65;color:#aab0c6;white-space:pre">{{ stage.snippet }}</pre>
-            </div>
             <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:24px">
               <sc-for list="{{ stage.stack }}" as="s" hint-placeholder-count="4">
                 <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.05em;padding:5px 10px;border-radius:7px;background:rgba(84,221,230,.07);border:1px solid rgba(84,221,230,.18);color:#bfe6ea">{{ s }}</span>
@@ -417,7 +413,7 @@
 class Component extends DCLogic {
   constructor(props){
     super(props);
-    this.state = { lang:'es', activeProjectId:'axora', profileOpen:false };
+    this.state = { lang:'es', activeProjectId:'gym', profileOpen:false };
     this._cleanups = [];
     this._raf = {};
     this._scrollFns = [];
@@ -426,43 +422,32 @@ class Component extends DCLogic {
     this._freeze = false;
 
     this.FILTERS = [
-      {key:'ai', es:'IA', en:'AI'}, {key:'dev', es:'En desarrollo', en:'In progress'},
+      {key:'dev', es:'En desarrollo', en:'In progress'},
       {key:'web', es:'App', en:'App'},
     ];
 
     this.PROJECTS = [
-      { id:'axora', catKey:'ai', year:'2025', accent:'#54dde6', rgb:'84,221,230', status:{es:'En marcha',en:'In motion'}, statusColor:'#54dde6',
-        name:{es:'Axora',en:'Axora'}, stack:['Next.js','TypeScript','IA','Automatización','Stripe'],
-        long:{es:'Empecé notando cuántos negocios pierden horas en tareas que nadie quiere hacer. Con el tiempo entendí que a la gente no le importa la “IA” en sí, le importa recuperar su tiempo. Por eso terminé armando agentes y automatizaciones que se integran en lo que la empresa ya usa.', en:'I started noticing how many businesses lose hours on tasks nobody wants to do. Over time I understood people don\u2019t really care about “AI” itself, they care about getting their time back. So I ended up building agents and automations that fit into what the company already uses.'},
-        learned:{es:'Que, muchas veces, explicar la solución en el lenguaje del negocio convence más que una demo técnica.', en:'That, more often than not, explaining the solution in the business\u2019s own language convinces more than a technical demo.'},
-        decLabel:{es:'La decisión más difícil', en:'The hardest decision'},
-        dec:{es:'Decir que no a clientes que querían “una IA” sin un problema claro detrás. Preferí empezar por el problema aunque eso frenara la venta.', en:'Saying no to clients who wanted “an AI” with no clear problem behind it. I chose to start from the problem even when it slowed the sale.'},
-        stats:[ {n:'IA', l:{es:'En el centro',en:'At the center'}}, {n:'24/7', l:{es:'Trabajando',en:'Working'}}, {n:'real', l:{es:'Negocios',en:'Businesses'}} ],
-        snippet:"const agente = await axora.crear({\n  tareas: ['responder', 'agendar', 'seguir'],\n  meta: 'que el negocio respire',\n});\nagente.trabaja();" },
       { id:'gym', catKey:'dev', year:'2025', accent:'#54dde6', rgb:'84,221,230', status:{es:'Construyéndose',en:'Being built'}, statusColor:'#54dde6',
         name:{es:'Gym Circle',en:'Gym Circle'}, stack:['React','Next.js','Supabase','PostgreSQL'],
         long:{es:'Probé un montón de apps fitness y todas me motivaban los primeros días; después las dejaba. Con el tiempo empecé a pensar que quizá el problema no eran las funciones, sino que uno nunca siente que pertenece a algo. De ahí salió la idea, todavía en construcción, de armarla como un círculo, donde el progreso se comparte.', en:'I tried a bunch of fitness apps and they all motivated me the first few days; then I\u2019d drop them. Over time I started to think maybe the problem wasn\u2019t the features, but that you never feel you belong to anything. That\u2019s where the idea came from, still in progress: build it as a circle, where progress is shared.'},
         learned:{es:'Que las decisiones de producto pesan más que las técnicas: defino el “para quién” antes de elegir el cómo.', en:'That product decisions weigh more than technical ones: I define the “who for” before choosing the how.'},
         decLabel:{es:'Lo que haría distinto hoy', en:'What I’d do differently today'},
         dec:{es:'Empecé puliendo la interfaz antes de validar si la gente volvería. Hoy probaría la retención con algo mínimo antes de diseñar de más.', en:'I started polishing the interface before validating whether people would return. Today I’d test retention with something minimal before over-designing.'},
-        stats:[ {n:'WIP', l:{es:'En curso',en:'Ongoing'}}, {n:'PWA', l:{es:'Web + móvil',en:'Web + mobile'}}, {n:'2025', l:{es:'Pronto',en:'Soon'}} ],
-        snippet:"function Circulo({ progreso }) {\n  // el progreso se siente, no solo se ve\n  return <Anillo valor={progreso} vivo />;\n}" },
+        stats:[ {n:'WIP', l:{es:'En curso',en:'Ongoing'}}, {n:'PWA', l:{es:'Web + móvil',en:'Web + mobile'}}, {n:'2025', l:{es:'Pronto',en:'Soon'}} ] },
       { id:'night', catKey:'web', year:'2024', accent:'#54dde6', rgb:'84,221,230', status:{es:'En uso',en:'In use'}, statusColor:'#54dde6',
         name:{es:'Nightclub Manager',en:'Nightclub Manager'}, stack:['React','Supabase','Auth','REST'],
         long:{es:'Esto salió de alguien real que llevaba un local de noche con hojas de cálculo y mensajes sueltos. Viéndolo trabajar me quedó claro que, si los datos no son en tiempo real, siempre llegan tarde. Así que armé una app donde personal, stock, reservas y caja se sincronizan al instante.', en:'This came from someone real running a nightspot with spreadsheets and scattered messages. Watching them work, it became clear that if the data isn\u2019t real-time, it always arrives too late. So I built an app where staff, stock, bookings and cash sync instantly.'},
         learned:{es:'Que el mejor feedback aparece viendo a alguien usar tu producto en su contexto real, no en tu cabeza.', en:'That the best feedback shows up watching someone use your product in their real context, not in your head.'},
         decLabel:{es:'La suposición que cambió', en:'The assumption that changed'},
         dec:{es:'Asumí que querían más funciones. Hablando con quien lo usaba entendí que pedían menos pasos, no más opciones.', en:'I assumed they wanted more features. Talking with the person using it, I understood they wanted fewer steps, not more options.'},
-        stats:[ {n:'live', l:{es:'Tiempo real',en:'Real time'}}, {n:'todo', l:{es:'En un sitio',en:'In one place'}}, {n:'🔒', l:{es:'Seguro',en:'Secure'}} ],
-        snippet:"supabase.channel('sala')\n  .on('cambios', refrescar)\n  .subscribe();\n// la noche, bajo control" },
+        stats:[ {n:'live', l:{es:'Tiempo real',en:'Real time'}}, {n:'todo', l:{es:'En un sitio',en:'In one place'}}, {n:'🔒', l:{es:'Seguro',en:'Secure'}} ] },
       { id:'atlas', catKey:'web', year:'2025', accent:'#54dde6', rgb:'84,221,230', status:{es:'En desarrollo',en:'In development'}, statusColor:'#54dde6',
         name:{es:'Atlas',en:'Atlas'}, stack:['Next.js','TypeScript','PostgreSQL','Supabase'],
         long:{es:'Empezó con un negocio que fabrica y vende en varias sucursales: recetas en cuadernos, stock contado a mano y envíos coordinados por mensajes. Viendo eso entendí que el problema no era vender, era que el dueño no podía ver todo el recorrido. Así que estoy armando Atlas: recetas, stock, sucursales y distribución conectados con las ventas, para que el dueño tenga un solo centro de gestión.', en:'It started with a business that makes and sells across several branches: recipes in notebooks, stock counted by hand and deliveries coordinated over messages. Watching that, I understood the problem wasn\u2019t selling, it was that the owner couldn\u2019t see the whole journey. So I\u2019m building Atlas: recipes, stock, branches and distribution connected to sales, so the owner has a single management hub.'},
         learned:{es:'Que cuando la fabricación, el stock y las ventas viven en sistemas separados, nadie miente, pero nadie sabe la verdad completa.', en:'That when production, stock and sales live in separate systems, nobody lies, but nobody knows the full truth either.'},
         decLabel:{es:'La decisión difícil', en:'The hard decision'},
         dec:{es:'Quise empezar por las ventas, que era lo vistoso. Cambié de orden: sin recetas y stock confiables, cualquier número de ventas llega tarde o llega mal.', en:'I wanted to start with sales, the flashy part. I flipped the order: without reliable recipes and stock, any sales number arrives late or arrives wrong.'},
-        stats:[ {n:'recetas', l:{es:'A producción',en:'To production'}}, {n:'sucursales', l:{es:'Conectadas',en:'Connected'}}, {n:'1', l:{es:'Centro de gestión',en:'Management hub'}} ],
-        snippet:"const lote = producir(receta, cantidad);\nawait distribuir(lote, sucursales);\n// stock y ventas, en la misma foto" },
+        stats:[ {n:'recetas', l:{es:'A producción',en:'To production'}}, {n:'sucursales', l:{es:'Conectadas',en:'Connected'}}, {n:'1', l:{es:'Centro de gestión',en:'Management hub'}} ] },
     ];
 
     this.TECH = [
@@ -645,7 +630,7 @@ class Component extends DCLogic {
     const catA = this.FILTERS.find(f => f.key === ap.catKey);
     const stage = {
       id:ap.id, name:ap.name[L], catLabel:catA?catA[L]:'', year:ap.year, accent:ap.accent,
-      status:ap.status[L], statusColor:ap.statusColor, long:ap.long[L], learned:ap.learned?ap.learned[L]:'', decLabel:ap.decLabel?ap.decLabel[L]:'', dec:ap.dec?ap.dec[L]:'', stack:ap.stack, snippet:ap.snippet,
+      status:ap.status[L], statusColor:ap.statusColor, long:ap.long[L], learned:ap.learned?ap.learned[L]:'', decLabel:ap.decLabel?ap.decLabel[L]:'', dec:ap.dec?ap.dec[L]:'', stack:ap.stack,
       stats: ap.stats.map(s => ({ n:s.n, l:s.l[L] })),
     };
     const po = this.state.profileOpen;
