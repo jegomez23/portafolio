@@ -304,7 +304,7 @@
                 <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.05em;padding:5px 10px;border-radius:7px;background:rgba(84,221,230,.07);border:1px solid rgba(84,221,230,.18);color:#bfe6ea">{{ s }}</span>
               </sc-for>
             </div>
-            <a href="https://github.com/jegomez23" target="_blank" rel="noopener" data-magnetic style="align-self:flex-start;text-decoration:none;display:inline-flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-size:12.5px;letter-spacing:.06em;color:#0a0d11;background:linear-gradient(120deg,#54dde6,#2bbac4);box-shadow:0 0 22px rgba(84,221,230,.26);padding:12px 22px;border-radius:999px;font-weight:500">{{ t.projects.visit }} ↗</a>
+            <a href="{{ stage.repo }}" target="_blank" rel="noopener" data-magnetic style="align-self:flex-start;text-decoration:none;display:inline-flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-size:12.5px;letter-spacing:.06em;color:#0a0d11;background:linear-gradient(120deg,#54dde6,#2bbac4);box-shadow:0 0 22px rgba(84,221,230,.26);padding:12px 22px;border-radius:999px;font-weight:500">{{ t.projects.visit }} ↗</a>
           </div>
         </div>
       </div>
@@ -428,21 +428,21 @@ class Component extends DCLogic {
 
     this.PROJECTS = [
       { id:'gym', catKey:'dev', year:'2025', accent:'#54dde6', rgb:'84,221,230', status:{es:'Construyéndose',en:'Being built'}, statusColor:'#54dde6',
-        name:{es:'Gym Circle',en:'Gym Circle'}, stack:['React','Next.js','Supabase','PostgreSQL'],
+        name:{es:'Gym Circle',en:'Gym Circle'}, stack:['React','Next.js','Supabase','PostgreSQL'], repo:'https://github.com/jegomez23/gym_app',
         long:{es:'Probé un montón de apps fitness y todas me motivaban los primeros días; después las dejaba. Con el tiempo empecé a pensar que quizá el problema no eran las funciones, sino que uno nunca siente que pertenece a algo. De ahí salió la idea, todavía en construcción, de armarla como un círculo, donde el progreso se comparte.', en:'I tried a bunch of fitness apps and they all motivated me the first few days; then I\u2019d drop them. Over time I started to think maybe the problem wasn\u2019t the features, but that you never feel you belong to anything. That\u2019s where the idea came from, still in progress: build it as a circle, where progress is shared.'},
         learned:{es:'Que las decisiones de producto pesan más que las técnicas: defino el “para quién” antes de elegir el cómo.', en:'That product decisions weigh more than technical ones: I define the “who for” before choosing the how.'},
         decLabel:{es:'Lo que haría distinto hoy', en:'What I’d do differently today'},
         dec:{es:'Empecé puliendo la interfaz antes de validar si la gente volvería. Hoy probaría la retención con algo mínimo antes de diseñar de más.', en:'I started polishing the interface before validating whether people would return. Today I’d test retention with something minimal before over-designing.'},
         stats:[ {n:'WIP', l:{es:'En curso',en:'Ongoing'}}, {n:'PWA', l:{es:'Web + móvil',en:'Web + mobile'}}, {n:'2025', l:{es:'Pronto',en:'Soon'}} ] },
       { id:'night', catKey:'web', year:'2024', accent:'#54dde6', rgb:'84,221,230', status:{es:'En uso',en:'In use'}, statusColor:'#54dde6',
-        name:{es:'Nightclub Manager',en:'Nightclub Manager'}, stack:['React','Supabase','Auth','REST'],
+        name:{es:'Nightclub Manager',en:'Nightclub Manager'}, stack:['React','Supabase','Auth','REST'], repo:'https://github.com/jegomez23/Flex2',
         long:{es:'Esto salió de alguien real que llevaba un local de noche con hojas de cálculo y mensajes sueltos. Viéndolo trabajar me quedó claro que, si los datos no son en tiempo real, siempre llegan tarde. Así que armé una app donde personal, stock, reservas y caja se sincronizan al instante.', en:'This came from someone real running a nightspot with spreadsheets and scattered messages. Watching them work, it became clear that if the data isn\u2019t real-time, it always arrives too late. So I built an app where staff, stock, bookings and cash sync instantly.'},
         learned:{es:'Que el mejor feedback aparece viendo a alguien usar tu producto en su contexto real, no en tu cabeza.', en:'That the best feedback shows up watching someone use your product in their real context, not in your head.'},
         decLabel:{es:'La suposición que cambió', en:'The assumption that changed'},
         dec:{es:'Asumí que querían más funciones. Hablando con quien lo usaba entendí que pedían menos pasos, no más opciones.', en:'I assumed they wanted more features. Talking with the person using it, I understood they wanted fewer steps, not more options.'},
         stats:[ {n:'live', l:{es:'Tiempo real',en:'Real time'}}, {n:'todo', l:{es:'En un sitio',en:'In one place'}}, {n:'🔒', l:{es:'Seguro',en:'Secure'}} ] },
       { id:'atlas', catKey:'web', year:'2025', accent:'#54dde6', rgb:'84,221,230', status:{es:'En desarrollo',en:'In development'}, statusColor:'#54dde6',
-        name:{es:'Atlas',en:'Atlas'}, stack:['Next.js','TypeScript','PostgreSQL','Supabase'],
+        name:{es:'Atlas',en:'Atlas'}, stack:['Next.js','TypeScript','PostgreSQL','Supabase'], repo:'https://github.com/jegomez23/atlas_bussines',
         long:{es:'Empezó con un negocio que fabrica y vende en varias sucursales: recetas en cuadernos, stock contado a mano y envíos coordinados por mensajes. Viendo eso entendí que el problema no era vender, era que el dueño no podía ver todo el recorrido. Así que estoy armando Atlas: recetas, stock, sucursales y distribución conectados con las ventas, para que el dueño tenga un solo centro de gestión.', en:'It started with a business that makes and sells across several branches: recipes in notebooks, stock counted by hand and deliveries coordinated over messages. Watching that, I understood the problem wasn\u2019t selling, it was that the owner couldn\u2019t see the whole journey. So I\u2019m building Atlas: recipes, stock, branches and distribution connected to sales, so the owner has a single management hub.'},
         learned:{es:'Que cuando la fabricación, el stock y las ventas viven en sistemas separados, nadie miente, pero nadie sabe la verdad completa.', en:'That when production, stock and sales live in separate systems, nobody lies, but nobody knows the full truth either.'},
         decLabel:{es:'La decisión difícil', en:'The hard decision'},
@@ -525,10 +525,10 @@ class Component extends DCLogic {
         stages:['Observación','Premisa','Hipótesis','Pregunta','Registro','Método','Iteración','Experimentos','Instrumentos','Evidencia','Pregunta','Descubrimiento','En curso','Conclusión'],
         repos:[
           {name:'axora', desc:'la agencia. donde la ia trabaja.', lang:'TypeScript', color:'#54dde6'},
-          {name:'gym-circle', desc:'fitness, en construcción.', lang:'TypeScript', color:'#54dde6'},
-          {name:'nightclub-manager', desc:'gestión para la noche.', lang:'JavaScript', color:'#a6ecf0'},
-          {name:'atlas', desc:'el negocio completo, en una sola foto.', lang:'TypeScript', color:'#54dde6'},
-          {name:'portfolio', desc:'esto que estás mirando.', lang:'HTML', color:'#7fdfe6'},
+          {name:'gym-circle', desc:'fitness, en construcción.', lang:'TypeScript', color:'#54dde6', url:'https://github.com/jegomez23/gym_app'},
+          {name:'nightclub-manager', desc:'gestión para la noche.', lang:'JavaScript', color:'#a6ecf0', url:'https://github.com/jegomez23/Flex2'},
+          {name:'atlas', desc:'el negocio completo, en una sola foto.', lang:'TypeScript', color:'#54dde6', url:'https://github.com/jegomez23/atlas_bussines'},
+          {name:'portfolio', desc:'esto que estás mirando.', lang:'HTML', color:'#7fdfe6', url:'https://github.com/jegomez23/portafolio'},
         ],
       },
       en:{
@@ -578,10 +578,10 @@ class Component extends DCLogic {
         stages:['Observation','Premise','Hypothesis','Question','Archive','Method','Iteration','Experiments','Instruments','Evidence','Question','Discovery','In progress','Conclusion'],
         repos:[
           {name:'axora', desc:'the agency. where ai works.', lang:'TypeScript', color:'#54dde6'},
-          {name:'gym-circle', desc:'fitness, under construction.', lang:'TypeScript', color:'#54dde6'},
-          {name:'nightclub-manager', desc:'management for the night.', lang:'JavaScript', color:'#a6ecf0'},
-          {name:'atlas', desc:'the whole business, in one picture.', lang:'TypeScript', color:'#54dde6'},
-          {name:'portfolio', desc:'this thing you\u2019re looking at.', lang:'HTML', color:'#7fdfe6'},
+          {name:'gym-circle', desc:'fitness, under construction.', lang:'TypeScript', color:'#54dde6', url:'https://github.com/jegomez23/gym_app'},
+          {name:'nightclub-manager', desc:'management for the night.', lang:'JavaScript', color:'#a6ecf0', url:'https://github.com/jegomez23/Flex2'},
+          {name:'atlas', desc:'the whole business, in one picture.', lang:'TypeScript', color:'#54dde6', url:'https://github.com/jegomez23/atlas_bussines'},
+          {name:'portfolio', desc:'this thing you\u2019re looking at.', lang:'HTML', color:'#7fdfe6', url:'https://github.com/jegomez23/portafolio'},
         ],
       },
     };
@@ -630,7 +630,7 @@ class Component extends DCLogic {
     const catA = this.FILTERS.find(f => f.key === ap.catKey);
     const stage = {
       id:ap.id, name:ap.name[L], catLabel:catA?catA[L]:'', year:ap.year, accent:ap.accent,
-      status:ap.status[L], statusColor:ap.statusColor, long:ap.long[L], learned:ap.learned?ap.learned[L]:'', decLabel:ap.decLabel?ap.decLabel[L]:'', dec:ap.dec?ap.dec[L]:'', stack:ap.stack,
+      status:ap.status[L], statusColor:ap.statusColor, long:ap.long[L], learned:ap.learned?ap.learned[L]:'', decLabel:ap.decLabel?ap.decLabel[L]:'', dec:ap.dec?ap.dec[L]:'', stack:ap.stack, repo:ap.repo||'https://github.com/jegomez23',
       stats: ap.stats.map(s => ({ n:s.n, l:s.l[L] })),
     };
     const po = this.state.profileOpen;
@@ -974,7 +974,7 @@ class Component extends DCLogic {
     const rowEls=[];
     repos.forEach((r)=>{
       const row=document.createElement('a');
-      row.href='https://github.com/jegomez23'; row.target='_blank'; row.rel='noopener';
+      row.href=r.url||'https://github.com/jegomez23'; row.target='_blank'; row.rel='noopener';
       row.style.cssText='display:flex;align-items:center;gap:14px;padding:15px 6px;border-bottom:1px solid rgba(176,196,206,.08);text-decoration:none;color:#9aa0b4;opacity:0;transform:translateX(-12px);transition:opacity .5s ease,transform .5s cubic-bezier(.16,1,.3,1),background .3s ease,color .3s ease;cursor:none';
       row.addEventListener('mouseenter',()=>{ row.style.background='rgba(84,221,230,.05)'; row.style.color='#eef0f7'; row.style.transform='translateX(6px)'; });
       row.addEventListener('mouseleave',()=>{ row.style.background='transparent'; row.style.color='#9aa0b4'; row.style.transform='translateX(0)'; });
